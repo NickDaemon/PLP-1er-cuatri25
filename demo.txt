@@ -22,7 +22,7 @@ foldDoc Vacio (\t acc -> Texto t acc) (\k acc -> Linea (i+k) acc) Vacio
 Vacio  --> Que era lo que queriamos probar.
 
 Por lo tanto al ser Vacio = Vacio , queda demostrado ∀ k :: int Positivo
-						                             indentar k Vacio = Vacio
+						     indentar k Vacio = Vacio
 
 {L2}
 ∀ k :: int Positivo , s :: String , d :: Doc
@@ -126,7 +126,7 @@ indentar (n+m) (Texto s x) --> Que era lo que queriamos probar.
 Por lo tanto queda demostrado que P(x) ==> P(Texto s x)
 
 Ahora asumiendo verdadero P(x) --> 
-Pruebo P(Linea i x)
+P(Linea i x)
 
 {HI} : indentar n (indentar m x) = indentar (n+m) x
 
