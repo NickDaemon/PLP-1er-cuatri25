@@ -123,7 +123,8 @@ testsEj8 =
     [ mostrar (aplanar (a <+> linea <+> b <+> linea <+> c)) ~?= "a b c",
       -- Test propios
       mostrar (aplanar texto1) ~?= "ab cd",
-      mostrar (aplanar (a <+> texto2 <+> texto1)) ~?= "aab cd"
+      mostrar (aplanar (a <+> texto2 <+> texto1)) ~?= "aab cd",
+      mostrar (aplanar (linea <+> a <+> linea)) ~?= " a "
     ]
 
 testsEj9 :: Test
