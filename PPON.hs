@@ -51,5 +51,16 @@ pponADoc ppon = case ppon of
     fRec lista         = entreLlaves (map parAdoc lista)
     parAdoc (s, ppon') = texto (show s) <+> texto ": " <+> pponADoc ppon'
 
+-- Es recursion estructural por que:
+-- En los casos bases no recurrimos a funciones recursivas ya que no contienen subcomponentes de tipo PPON. 
+-- La función simplemente combina los parámetros en un valor del tipo Doc.
+
+-- En los casos recursivos la construccion del resultado solo se realiza utilizando los parámetros que no son de tipo PPON. 
+-- (las claves s que se obtienen en cada par).
+-- Y se invoca recursivamente pponADoc exclusivamente sobre cada parametro de tipo PPON.
+-- Sin hacer otros llamados recursivos, y sin usar estos parametros.
+
+
+
 
     
