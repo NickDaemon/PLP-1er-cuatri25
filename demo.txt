@@ -22,7 +22,7 @@ foldDoc Vacio (\t acc -> Texto t acc) (\k acc -> Linea (i+k) acc) Vacio
 Vacio  --> Que era lo que queriamos probar.
 
 Por lo tanto al ser Vacio = Vacio , queda demostrado ∀ k :: int Positivo
-						     indentar k Vacio = Vacio
+						                             indentar k Vacio = Vacio
 
 {L2}
 ∀ k :: int Positivo , s :: String , d :: Doc
@@ -104,6 +104,7 @@ P(Texto s x)
 {HI} : indentar n (indentar m x) = indentar (n+m) x
 
 Qvq:
+∀ n,m :: int Positivo , x :: Doc
 indentar n (indentar m (Texto s x)) = indentar (n+m) (Texto s x)
 
 Lado Izq:
@@ -121,18 +122,18 @@ indentar n (Texto s (indentar m x))
 ≡ {L2}
 indentar n (indentar m (Texto s x)) 
 ≡ {HI}
-indentar (n+m) (Texto s x) --> Que era lo que queriamos probar.
-
-Por lo tanto queda demostrado que P(x) ==> P(Texto s x)
+indentar (n+m) (Texto s x) --> Como Lado izq = Lado der concluimos que P(x) ==> P(Texto s x)
 
 Ahora asumiendo verdadero P(x) --> 
-P(Linea i x)
+Pruebo P(Linea i x)
 
 {HI} : indentar n (indentar m x) = indentar (n+m) x
 
 Qvq:
+∀ n,m :: int Positivo , x :: Doc
 indentar n (indentar m (Linea i x)) = indentar (n+m) (Linea i x)
 
+Lado izq:
 indentar n (indentar m (Linea i x)) 
 ≡ {I}
 indentar n (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) (Linea i x)) 
@@ -147,10 +148,9 @@ indentar n (Linea (m+i) (indentar m x))
 ≡ {L3}
 indentar n (indentar m (Linea i x)) 
 ≡ {HI}
-indentar (n+m) (Linea i x) --> Que era lo que buscaba
+indentar (n+m) (Linea i x) --> Como Lado izq = Lado der concluimos que P(x) ==> P(Linea i x)
 
-Por lo tanto queda demostrado que P(x) ==> P(Linea i x)
+Al probar 1) 2) y 3) demostramos por induccion estructural que:
 
-Al probar 1) 2) y 3) demostramos por induccion estructural P(x).
-
-
+∀ n,m :: int Positivo , x :: Doc
+indentar n (indentar m x) = indentar (n+m) x
