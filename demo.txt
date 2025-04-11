@@ -1,0 +1,156 @@
+Definiciones:
+
+{F1} foldDoc acc f g Vacio = Vacio
+{F2} foldDoc acc f g (Texto s d) = f s (foldDoc f g d)
+{F3} foldDoc acc f g (Linea i d) = g i (foldDoc f g d)
+
+{I} indentar k d = foldDoc Vacio (\t acc -> Texto t acc) (\i acc -> Linea (k+i) acc) d
+
+{β} (\x -> Y) Z = Y --> reemplazando a x por Z
+{η} \x -> F x = F 
+
+Usando el principio de reemplazo, queremos probar {L1}, {L2} y {L3} :
+
+{L1}
+∀ k :: int Positivo
+indentar k Vacio = Vacio
+
+indentar k Vacio 
+≡ {I}
+foldDoc Vacio (\t acc -> Texto t acc) (\k acc -> Linea (i+k) acc) Vacio 
+≡ {F1}
+Vacio  --> Que era lo que queriamos probar.
+
+Por lo tanto al ser Vacio = Vacio , queda demostrado ∀ k :: int Positivo
+						                             indentar k Vacio = Vacio
+
+{L2}
+∀ k :: int Positivo , s :: String , d :: Doc
+indentar k (Texto s d) = Texto s (indentar k d)
+
+indentar k (Texto s d) 
+≡ {I} 
+foldDoc Vacio (\t acc -> Texto t acc) (\k acc -> Linea (i+k) acc) (Texto s d)
+≡ {F2}
+(\t -> (\acc -> Texto t acc)) s (foldDoc Vacio (\t acc -> Texto t acc) (\k acc -> Linea (i+k) acc) d) 
+≡ {η}
+(\t -> Texto t) s (foldDoc Vacio (\t acc -> Texto t acc) (\k acc -> Linea (i+k) acc) d) 
+≡ {η}
+Texto s (foldDoc Vacio (\t acc -> Texto t acc) (\k acc -> Linea (i+k) acc) d) 
+≡ {I}
+Texto s (indentar k d) --> Que era a lo que queriamos llegar.
+
+Por lo tanto queda demostrado :  ∀ k :: int Positivo , s :: String , d :: Doc
+                                 indentar k (Texto s d) = Texto s (indentar k d)
+
+
+{L3}
+∀ k,m :: int Positivo , d :: Doc
+indentar m (Linea k d) = Linea (m+k) (indentar m d)
+
+indentar m (Linea k d) 
+≡ {I} 
+foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) (Linea k d) 
+≡ {F3}
+(\j -> (\acc -> Linea (m+j) acc)) k (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) d) 
+≡ {η} 
+(\j -> Linea (m+j)) k (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) d) 
+≡ {β}
+Linea (m+k) (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) d) 
+≡ {I}
+Linea (m+k) (indentar m d) --> Que era a lo que queriamos llegar.
+
+Por lo tanto queda demostrado que : ∀ k,m :: int Positivo , d :: Doc
+                                    indentar m (Linea k d) = Linea (m+k) (indentar m d)
+
+
+Ahora por induccion estructural queremos probar que:
+
+∀ n,m :: int Positivo , x :: Doc
+indentar n (indentar m x) = indentar (n+m) x
+
+Predicado unario --> ∀ n,m :: int Positivo , x :: Doc
+                     P(x) ≡ indentar n (indentar m x) = indentar (n+m) x
+
+Tenemos que probar 3 cosas:
+1)  P(Vacio)
+
+2)  ∀ s :: string, x :: Doc
+    P(x) => P(Texto s x)
+
+3)  ∀ n,m :: int Positivo , x :: Doc
+    P(x) => P(Linea i x)
+
+P(Vacio) :
+indentar n (indentar m Vacio) = indentar (n+m) Vacio
+
+Lado Der:
+indentar (n+m) Vacio 
+≡ {L1}
+Vacio
+
+Lado Izq:
+indentar n (indentar m Vacio) 
+≡ {L1}
+indentar n Vacio 
+≡ {L1}
+Vacio 
+
+Como Lado der = Lado izq , podemos concluir que P(Vacio) es verdadero.
+
+Ahora asumiendo verdadero P(x) --> 
+P(Texto s x)
+
+{HI} : indentar n (indentar m x) = indentar (n+m) x
+
+Qvq:
+indentar n (indentar m (Texto s x)) = indentar (n+m) (Texto s x)
+
+Lado Izq:
+indentar n (indentar m (Texto s x)) 
+≡ {I}
+indentar n (foldDoc Vacio (\t acc -> Texto t acc) (\i acc -> Linea (m+i) acc) (Texto s x)) 
+≡ {F2}
+indentar n ((\t -> \(acc -> Texto t acc))) s (foldDoc Vacio (\t acc -> Texto t acc) (\i acc -> Linea (m+i) acc) x) 
+≡ {η} 
+indentar n ((\t -> Texto t)) s (foldDoc Vacio (\t acc -> Texto t acc) (\i acc -> Linea (m+i) acc) x)
+≡ {η} 
+indentar n (Texto s (foldDoc Vacio (\t acc -> Texto t acc) (\i acc -> Linea (m+i) acc) x)) 
+≡ {I}
+indentar n (Texto s (indentar m x)) 
+≡ {L2}
+indentar n (indentar m (Texto s x)) 
+≡ {HI}
+indentar (n+m) (Texto s x) --> Que era lo que queriamos probar.
+
+Por lo tanto queda demostrado que P(x) ==> P(Texto s x)
+
+Ahora asumiendo verdadero P(x) --> 
+Pruebo P(Linea i x)
+
+{HI} : indentar n (indentar m x) = indentar (n+m) x
+
+Qvq:
+indentar n (indentar m (Linea i x)) = indentar (n+m) (Linea i x)
+
+indentar n (indentar m (Linea i x)) 
+≡ {I}
+indentar n (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) (Linea i x)) 
+≡ {F3}
+indentar n ((\j acc -> Linea (m+j) acc) i (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) x)) 
+≡ {η} 
+indentar n ((\j -> Linea (m+j)) i (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) x)) )
+≡ {β}
+indentar n (Linea (m+i) (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) x)) 
+≡ {I}
+indentar n (Linea (m+i) (indentar m x)) 
+≡ {L3}
+indentar n (indentar m (Linea i x)) 
+≡ {HI}
+indentar (n+m) (Linea i x) --> Que era lo que buscaba
+
+Por lo tanto queda demostrado que P(x) ==> P(Linea i x)
+
+Al probar 1) 2) y 3) demostramos por induccion estructural P(x).
+
+
