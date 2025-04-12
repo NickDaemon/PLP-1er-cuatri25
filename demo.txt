@@ -140,7 +140,7 @@ indentar n (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) (L
 ≡ {F3}
 indentar n ((\j acc -> Linea (m+j) acc) i (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) x)) 
 ≡ {η} 
-indentar n ((\j -> Linea (m+j)) i (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) x)) )
+indentar n ((\j -> Linea (m+j)) i (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) x))
 ≡ {β}
 indentar n (Linea (m+i) (foldDoc Vacio (\t acc -> Texto t acc) (\j acc -> Linea (m+j) acc) x)) 
 ≡ {I}
