@@ -1,6 +1,6 @@
 Definiciones:
 
-{F1} foldDoc acc f g Vacio = Vacio
+{F1} foldDoc acc f g Vacio = acc
 {F2} foldDoc acc f g (Texto s d) = f s (foldDoc f g d)
 {F3} foldDoc acc f g (Linea i d) = g i (foldDoc f g d)
 
