@@ -1,0 +1,409 @@
+Ejercicio 3:
+
+Definiciones :
+
+length :: [a] -> Int
+{L0} length [] = 0
+{L1} length (x:xs) = 1 + length xs
+
+duplicar :: [a] -> [a]
+{D0} duplicar [] = []
+{D1} duplicar (x:xs) = x : x : duplicar xs
+
+(++) :: [a] -> [a] -> [a]
+{++0} [] ++ ys = ys
+{++1} (x:xs) ++ ys = x : (xs ++ ys)
+
+append :: [a] -> [a] -> [a]
+{A0} append xs ys = foldr (:) ys xs
+
+ponerAlFinal :: a -> [a] -> [a]
+{P0} ponerAlFinal x = foldr (:) (x:[])
+
+reverse :: [a] -> [a]
+{R0} reverse = foldl (flip (:)) []
+
+-----------------------------------------------------------------------------
+
+I) ∀ xs::[a] . length (duplicar xs) = 2 * length xs
+
+Uso induccion estructural :
+∀ xs :: [a] , x :: a
+Pruebo P([]) y P(xs) => P(x:xs)
+
+Caso P([]):
+length (duplicar []) = 2 * length []
+= {D0}
+length [] = 2 * length []
+= {L0}
+0 = 2 * length []
+= {L0}
+0 = 0  --> Vale P([])
+
+Caso inductivo
+{HI} ∀ xs::[a] . length (duplicar xs) = 2 * length xs
+
+Qvq: 
+length (duplicar (x:xs)) = 2 * length (x:xs)
+
+Lado Izq:
+length (duplicar (x:xs))
+= {D1}
+length (x : x : duplicar xs)
+= {L1}
+1 + length (x : duplicar xs)
+= {L1}
+1 + (1 + (length (duplicar xs))) 
+= {HI}
+2 + 2 * length xs
+
+Lado Der:
+2 * length (x:xs)
+= {L1}
+2 * (1 + length xs)
+= {Aplicacion}
+2 + 2 * length xs
+
+Lado izq = Lado der  --> Queda demostrado.
+
+-----------------------------------------------------------------------------
+
+II) ∀ xs::[a] . ∀ ys::[a] . length (xs ++ ys) = length xs + length ys
+
+Uso induccion estructural con xs :
+
+∀ xs :: [a] , x :: a
+Pruebo P([]) y P(xs) => P(x:xs)
+
+P([])
+
+length ([] ++ ys) = length [] + length ys
+
+Lado izq:
+length ([] ++ ys)
+= {++0}
+length ys
+
+Lado der
+length [] + length ys
+= {L0}
+length ys
+
+Lado izq = Lado der --> Queda demostrado P([])
+
+Caso inductivo : {++1} (x:xs) ++ ys = x : (xs ++ ys)
+
+Qvq length ((x:xs) ++ ys) = length (x:xs) + length ys
+
+{HI}: length (xs ++ ys) = length xs + length ys
+
+Lado izq:
+length ((x:xs) ++ ys)
+= {++1}
+length (x : (xs ++ ys))
+= {L1}
+1 + length (xs ++ ys)
+= {HI}
+1 + length xs + length ys
+
+Lado der:
+length (x:xs) + length ys
+= {L1}
+1 + length xs + length ys
+
+Como lado izq = Lado der queda demostrado P(x:xs)
+
+-----------------------------------------------------------------------------
+
+III) ∀ xs::[a] . ∀ x::a . append [x] xs = x:xs
+
+Uso induccion estructural en xs
+
+Tengo que probar P([]) y P(x) => P(x:xs) 
+
+{A0} append xs ys = foldr (:) ys xs
+
+Caso P([])
+append [x] [] = x : []
+= {A0}
+foldr (:) [] [x]
+= {DEF foldr}
+(:) x (foldr (:) [] [])
+= {Aplicacion}
+(:) x [] = x : []
+
+Como lado izq = lado der  --> queda demostrado P([])
+
+Caso inductivo
+
+Qvq : append [x] (y:xs) = x : (y : xs)
+
+Lado izq:
+append [x] (y:xs) 
+= {A0}
+foldr (:) (y:xs) [x]
+= {DEF foldr}
+(:) x (foldr (:) (y:xs) [])
+= {DEF foldr}
+(:) x (y : xs) = x : (y : xs)  --> Queda demostrado
+
+-----------------------------------------------------------------------------
+
+IV) ∀ xs::[a] . ∀ f::(a->b) . length (map f xs) = length xs
+
+map :: (a -> b) -> [a] -> [b]
+{M0} map f []     = []
+{M1} map f (x:xs) = f x : map f xs
+
+Uso induccion estructural en xs:
+
+Caso P([])
+
+length (map f []) = length []
+= {M0}
+length [] = length []  --> lado izq = der , queda demostrado.
+
+Caso inductivo:
+
+{HI} length (map f xs) = length xs
+
+Qvq length (map f (x:xs)) = length (x:xs)
+
+lado izq:
+length (map f (x:xs))
+= {M1}
+length (f x : map f xs)
+= {L1}
+1 + length (map f xs)
+= {HI}
+1 + length xs
+
+Lado der:
+length (x:xs)
+= {L1}
+1 + length xs
+
+Como lado izq = lado der queda demostrado.
+
+-----------------------------------------------------------------------------
+
+V) ∀ xs::[a] . ∀ p:: a-> Bool . ∀ e::a . ((elem e (filter p xs)) => (elem e xs))
+   (asumiendo Eq a)
+
+{F0} filter p []     = []
+{F1} filter p (x:xs) = if p x then x : filter p xs else filter p xs
+
+Usando induccion estructural en xs quiero ver que:
+P([]) y P(xs) => P(x:xs) 
+
+P(xs) : ((elem e (filter p xs)) => (elem e xs))
+
+Caso P([])
+((elem e (filter p [])) => (elem e []))
+= {F0}
+elem e [] => elem e []   --> Como P => P es verdadero para cualquier P , queda demostrado.
+
+Caso P(x:xs)
+{HI} : ((elem e (filter p xs)) => (elem e xs))
+Por lema de generacion de Bool:
+B1) (elem e (filter p xs)) = False
+B2) (elem e (filter p xs)) = True
+
+En el caso B1: False => Q = True para cualquier Q , por lo tanto queda demostrada la implicacion.
+
+Ahora asumo True B2)
+Sabiendo que (elem e (filter p xs)) = True
+tenemos que por {HI} elem e xs = True
+
+Qvq: ((elem e (filter p (x:xs))) => (elem e (x:xs)))
+
+elem e (x:xs)
+= {DEF elem}
+e == x || elem e xs
+= {HI}
+e == x || True = True
+Por lo tanto al ser True el consecuente , debo probar el antecedente.
+
+elem e (filter p (x:xs))
+= {F1}
+elem e (if p x then x : filter xs else filter xs)
+= {DEF elem}
+elem e (x : filter xs) || elem e (filter xs)
+
+Separo en casos:
+A) elem e (x : filter xs)
+B) elem e filter p xs
+
+Caso A)
+elem e (x : filter p xs)
+= {DEf elem}
+e == x || elem e filter p xs
+= {HI}
+e == x || True 
+= {DEF bool}
+True
+
+Caso B)
+elem e filter p xs 
+= {HI}
+True
+
+Habiendo cubierto todos los casos demuestro que :
+((elem e (filter p (x:xs))) => (elem e (x:xs)))
+
+-----------------------------------------------------------------------------
+
+VI) ∀ xs::[a] . ∀ x::a . ponerAlFinal x xs = xs ++ (x:[])
+
+ponerAlFinal :: a -> [a] -> [a]
+{P0} ponerAlFinal x = foldr (:) (x:[])
+
+Uso induccion estructural en xs
+
+Tengo que ver
+P([]) y P(xs) => P(x:xs)
+
+Caso P([])
+ponerAlFinal x [] = [] ++ (x:[])
+= {P0}
+foldr (:) (x:[]) [] = [] ++ (x:[])
+= {DEF foldr}
+(x:[]) = [] ++ (x:[])
+= {++0}
+(x:[]) = (x:[])  --> Queda demostrado P([])
+
+Caso inductivo
+
+{HI} ponerAlFinal x xs' = xs' ++ (x:[])
+
+Qvq ponerAlFinal x (x:xs') = (x:xs') ++ (x:[])
+
+Lado izq:
+ponerAlFinal x (x:xs')
+= {P0}
+foldr (:) (x:[]) (x:xs')
+= {DEF foldr}
+(:) x (foldr (:) (x:[]) xs')
+= {P0}
+(:) x (ponerAlFinal x xs')
+= {HI}
+(:) x (xs' ++ (x:[]))
+= {DEF (:)}
+x : (xs' ++ (x:[]))
+= {++1}
+(x:xs') ++ (x:[])  --> Lado izq = Lado der 
+
+Por induccion estructural sobre xs queda demostrado que :
+∀ xs :: [a], ∀ x :: a.
+ponerAlFinal x xs = xs ++ [x]
+
+-----------------------------------------------------------------------------
+
+VII) reverse = foldr (\x rec -> rec ++ (x:[])) []
+
+Por extensionalidad funcional Qvq
+∀ xs :: [a] --> reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
+
+Usando induccion estructural en xs tengo que probar que:
+P([]) y P(xs) => P(x:xs)
+
+Predicado unario -> P(xs) : reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
+
+Caso P([])
+reverse [] = foldr (\x rec -> rec ++ (x:[])) [] []
+= {DEF reverse}
+[] = foldr (\x rec -> rec ++ (x:[])) [] []
+= {DEF foldr}
+[] = [] --> Queda demostrado P([])
+
+Caso inductivo:
+
+{HI} : reverse xs' = foldr (\x rec -> rec ++ (x:[])) [] xs'
+
+Qvq:
+∀ x' :: a, xs' :: [a]
+reverse (x':xs') = foldr (\x rec -> rec ++ (x:[])) [] (x':xs')
+
+{R0} reverse []     = []
+{R1} reverse (x:xs) = reverse xs ++ [x]
+
+Lado izq:
+reverse (x':xs')
+= {R1}
+reverse xs' ++ [x']
+= {HI}
+foldr (\x rec -> rec ++ (x:[])) [] xs' ++ [x']
+
+Lado der:
+foldr (\x rec -> rec ++ (x:[])) [] (x':xs')
+= {DEF foldr}
+(\x -> (rec -> rec ++ (x:[]))) x' (foldr (\x rec -> rec ++ (x:[])) [] xs')
+= {β}
+(\rec -> rec ++ [x']) (foldr (\x rec -> rec ++ (x:[])) [] xs')
+= {β}
+(foldr (\x rec -> rec ++ (x:[])) [] xs') ++ [x]
+
+Lado izq = Lado der 
+
+Por induccion estructural sobre xs queda demostrado que :
+∀ xs :: [a]
+reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
+
+-----------------------------------------------------------------------------
+
+VIII) ∀ xs::[a] . ∀ x::a . head (reverse (ponerAlFinal x xs)) = x
+
+{P0} : ponerAlFinal x xs = foldr (:) (x:[]) xs
+{PL} : ponerAlFinal x xs = xs ++ [x]
+
+{R0} : reverse [] = []
+{R1} : reverse (x:xs) = reverse xs : [x]
+{RF} : reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
+
+{HL} ∀ xs, ys :: [a] , xs != []
+     head (xs ++ ys) = head xs
+
+P(xs) : head (reverse (ponerAlFinal x xs)) = x
+
+Usando induccion estructural sobre xs tengo que ver:
+P([]) y P(xs) => P(x:xs)
+
+P([])
+head (reverse (ponerAlFinal x [])) = x
+= {PL}
+head (reverse ([] ++ [x])) = x
+= {++0}
+head (reverse [x]) = x
+= {RF}
+head (foldr (\x rec -> rec ++ [x]) [] [x]) = x
+= {DEF foldr}
+head ((\x rec -> rec ++ [x]) x (foldr (\x rec -> rec ++ [x]) [] [])) = x
+= {B} y {DEF foldr}
+head (\rec -> rec ++ [x]) [] = x
+= {B}
+head ([] ++ [x]) = x
+= {++0}
+head [x] = x
+= {DEF head}
+x = x  --> Queda demostrado P([])
+
+Caso inductivo
+
+{HI} head (reverse (ponerAlFinal x xs)) = x
+
+Qvq
+head (reverse (ponerAlFinal x (x': xs))) = x
+= {P0}
+head (reverse ((x': xs) ++ [x])) = x
+= {++1}
+head (reverse (x' : (xs ++ [x]))) = x
+= {R1}
+head (reverse (xs ++ [x]) ++ [x']) = x
+= {HL}
+head (reverse (xs ++ [x])) = x
+= {PL}
+head (reverse (ponerAlFinal x xs)) = x
+= {HI}
+x = x
+
+Falta probar que head (A ++ B) = head A , si A no es [] . uwu

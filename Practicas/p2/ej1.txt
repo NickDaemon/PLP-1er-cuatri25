@@ -1,0 +1,81 @@
+Ejercicio 1:
+
+-----------------------------------------------------------------------------
+
+I) ∀ p::(a,b) . intercambiar (intercambiar p) = p
+
+Por lema de generacion de pares:
+E x :: a && E y :: b  --> p = (x,y)
+
+def {I} = intercambiar (x,y) = (y,x)
+
+Qvq 
+intercambiar (intercambiar (x,y)) = (x,y)
+= {I}
+intercambiar (y,x) = (x,y)
+= {I}
+(x,y) = (x,y)   --> Queda demostrado.
+
+-----------------------------------------------------------------------------
+
+II) ∀ p::(a,(b,c)) . asociarD (asociarI p) = p
+
+Por lema de generacion de pares:
+E x :: a && E y :: b && R z :: c --> p = (x,(y,z))
+
+DEF {AI} asociarI (x,(y,z)) = ((x,y),z)
+DEF {AD} asociarD ((x,y),z) = (x,(y,z))
+
+Qvq
+asociarD (asociarI (x,(y,z))) = (x,(y,z))
+= {AI}
+asociarD ((x,y), z) = (x,(y,z))
+= {AD}
+(x,(y,z)) = (x,(y,z))  --> Queda demostrado.
+
+-----------------------------------------------------------------------------
+
+II) ∀ p::Either a b . espejar (espejar p) = p
+
+Por lema de generacion de Suma:
+1) E x :: a  --> p = Left x
+2) E y :: b  --> p = Right y
+
+DEF {E1} espejar (Right x) = Left x
+DEF {E2} espejar (Left x) = Right x
+
+Qvq
+espejar (espejar (Left x)) = Left x
+= {E2}
+espejar (Right x) = Left x
+= {E1} 
+Left x = Left x --> Queda demostrado , idem para caso 2).
+
+-----------------------------------------------------------------------------
+
+III) ∀ f::a -> b-> c . ∀ x::a . ∀ y::b . flip (flip f) x y = f x y
+
+Por principio de sustitucion:
+
+DEF {F} flip f x y = f y x
+
+flip (flip f) x y = f x y
+= {F}
+(flip f) y x = f x y
+= {F}
+f x y = f x y  --> Queda demostrado
+
+-----------------------------------------------------------------------------
+
+IV) ∀ f::a->b->c . ∀ x::a . ∀ y::b . curry (uncurry f) x y = f x y
+
+Por principio de sustitucion:
+
+DEF {C} curry f x y = f (x,y)
+DEF {U} uncurry f (x,y) = f x y
+
+curry (uncurry f) x y = f x y
+= {C} 
+(uncurry f) (x,y) = f x y
+= {U}
+f x y = f x y --> Queda demostrado
