@@ -28,8 +28,10 @@ reverse [] = id []
 
 Caso inductivo:
 
-{HI} reverse . reverse xs = id xs
-{R0} reverse = foldl (flip (:)) []
+{HI} : reverse . reverse xs = id xs
+
+{Laux} : reverse (ys ++ [y]) = y : reverse ys
+
 
 Qvq:
 
@@ -41,6 +43,55 @@ reverse . reverse (x:xs)
 reverse (reverse (x:xs))
 = {DEF reverse}
 reverse (reverse xs ++ [x])
+= {Laux}
+x : reverse (reverse xs)
+= {HI}
+x : id xs 
+= {ID}
+(x:xs) --> Como lado izq = lado der , queda demostrado.
+
+Pruebo {Laux}:
+por induccion estructural en ys :
+
+Caso base P([])
+reverse ([] ++ [y]) = y : reverse []
+= {++0}
+reverse (y:[]) = y : reverse []
+= {DEF reverse}
+reverse [] ++ [y] = y : reverse []
+= {DEF reverse}
+[] ++ [y] = y : reverse []
+= {++0}
+[y] = y : reverse []
+= {DEF reverse}
+[y] = [y]   --> Queda demostrado P([])
+
+Caso inductivo P(ys) => P(y:ys)
+
+{HI} : reverse (ys ++ [y]) = y : reverse ys
+
+Qvq:
+reverse ((y:ys) ++ [y]) = y : reverse (y:ys)
+
+Lado izq:
+reverse ((y:ys) ++ [y])
+= {++1}
+reverse (y : ys ++ [y])
+= {DEF reverse}
+reverse (ys ++ [y]) ++ [y]
+= {HI}
+y : reverse ys ++ [y]
+
+Lado der:
+y : reverse (y:ys)
+= {DEF reverse}
+y : reverse ys ++ [y]
+
+como lado izq = lado der --> Queda demostrado.
+
+-------------------------------------------------------------------------------------------------
+
+
 
 
 
