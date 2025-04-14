@@ -40,8 +40,8 @@ asociarD ((x,y),z) = (x,(y,z))
 {ER} espejar (Right x) = Left x
 
 -- Por lema de generacion de suma:
--- 1) E x :: a. p = Left x
--- 2) E y :: b. p = Right y
+-- 1) ∃ x :: a. p = Left x
+-- 2) ∃ y :: b. p = Right y
 
 -- Caso 1)
 espejar (espejar (Left x)) = Left x
