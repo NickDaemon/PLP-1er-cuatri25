@@ -309,45 +309,46 @@ P([]) y P(xs) => P(x:xs)
 
 Predicado unario -> P(xs) : reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
 
-Caso P([])
-reverse [] = foldr (\x rec -> rec ++ (x:[])) [] []
-= {DEF reverse}
-[] = foldr (\x rec -> rec ++ (x:[])) [] []
-= {DEF foldr}
-[] = [] --> Queda demostrado P([])
-
-Caso inductivo:
-
-{HI} : reverse xs' = foldr (\x rec -> rec ++ (x:[])) [] xs'
-
-Qvq:
-∀ x' :: a, xs' :: [a]
-reverse (x':xs') = foldr (\x rec -> rec ++ (x:[])) [] (x':xs')
-
-{R0} reverse []     = []
+{R0} reverse [] = []
 {R1} reverse (x:xs) = reverse xs ++ [x]
 
+{FR0} foldr f z []     = z
+{FR1} foldr f z (x:xs) = f z (foldr f z xs)
+
+Caso P([])
+reverse [] = foldr (\x rec -> rec ++ (x:[])) [] []
+= {R0}
+foldl (flip (:)) [] [] = foldr (\x rec -> rec ++ (x:[])) [] []
+= {FL0}
+[] = foldr (\x rec -> rec ++ (x:[])) [] []
+= {FR0}
+[] = []   --> Queda demostrado P([])
+
+Caso inductivo
+
+{HI} : reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
+{R0} reverse = foldl (flip (:)) []
+
+Qvq:
+reverse (x:xs) = foldr (\x rec -> rec ++ (x:[])) [] (x:xs)
+
 Lado izq:
-reverse (x':xs')
+reverse (x:xs)
 = {R1}
-reverse xs' ++ [x']
-= {HI}
-foldr (\x rec -> rec ++ (x:[])) [] xs' ++ [x']
+reverse xs ++ [x]
 
 Lado der:
-foldr (\x rec -> rec ++ (x:[])) [] (x':xs')
-= {DEF foldr}
-(\x -> (rec -> rec ++ (x:[]))) x' (foldr (\x rec -> rec ++ (x:[])) [] xs')
-= {β}
-(\rec -> rec ++ [x']) (foldr (\x rec -> rec ++ (x:[])) [] xs')
-= {β}
-(foldr (\x rec -> rec ++ (x:[])) [] xs') ++ [x]
+foldr (\x rec -> rec ++ (x:[])) [] (x:xs)
+= {FR1}
+(\x rec -> rec ++ (x:[])) x (foldr (\x rec -> rec ++ (x:[])) [] xs)
+= {B}
+(\rec -> rec ++ [x]) (foldr (\x rec -> rec ++ (x:[])) [] xs)
+= {B}
+foldr (\x rec -> rec ++ (x:[])) [] xs ++ [x]
+= {HI}
+reverse xs ++ [x]
 
-Lado izq = Lado der 
-
-Por induccion estructural sobre xs queda demostrado que :
-∀ xs :: [a]
-reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
+Como lado izq = Lado der --> Queda demostrado.
 
 -----------------------------------------------------------------------------
 

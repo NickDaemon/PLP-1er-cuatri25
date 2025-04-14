@@ -1,0 +1,47 @@
+Ejercicio 4:
+
+-------------------------------------------------------------------------------------------------
+
+I) reverse . reverse = id
+
+Por extensionalidad funcional quiero ver que:
+∀ xs :: [a] --> reverse . reverse xs = id xs
+
+Por induccion estructural en xs tengo que probar:
+
+A) P([])
+
+B) ∀ x :: a 
+   P(xs) => P(x:xs)
+
+Caso base:
+
+reverse . reverse [] = id []
+= {DEF (.)}
+reverse (reverse []) = id []
+= {DEF reverse}
+reverse [] = id []
+= {DEF reverse}
+[] = id []
+= {DEF id}
+[] = []   --> Queda demostrado P([])
+
+Caso inductivo:
+
+{HI} reverse . reverse xs = id xs
+{R0} reverse = foldl (flip (:)) []
+
+Qvq:
+
+reverse . reverse (x:xs) = id (x:xs)
+
+Lado izq:
+reverse . reverse (x:xs)
+= {DEF (.)}
+reverse (reverse (x:xs))
+= {DEF reverse}
+reverse (reverse xs ++ [x])
+
+
+
+
