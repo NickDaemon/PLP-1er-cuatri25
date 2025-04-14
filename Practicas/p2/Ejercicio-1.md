@@ -13,8 +13,10 @@ intercambiar (intercambiar (x,y)) = (x,y)
 intercambiar (y,x) = (x,y)
 = {I}
 (x,y) = (x,y)   -- > Queda demostrado.
+```
 
 ## 1.2
+```haskell
 ∀ p::(a,(b,c)) . asociarD (asociarI p) = p
 
 {AD} : asociarD ((x,y),z) = (x,(y,z))
@@ -29,4 +31,4 @@ asociarD (asociarI (x,(y,z))) = (x,(y,z))
 asociarD ((x,y),z) = (x,(y,z))
 = {AD}
 (x,(y,z)) = (x,(y,z))  -- > Queda demostrado.
-
+```
