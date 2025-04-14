@@ -32,9 +32,7 @@ Caso inductivo:
 
 {Laux} : reverse (ys ++ [y]) = y : reverse ys
 
-
 Qvq:
-
 reverse . reverse (x:xs) = id (x:xs)
 
 Lado izq:
@@ -47,6 +45,11 @@ reverse (reverse xs ++ [x])
 x : reverse (reverse xs)
 = {HI}
 x : id xs 
+= {ID}
+(x:xs) 
+
+Lado der:
+id (x:xs)
 = {ID}
 (x:xs) --> Como lado izq = lado der , queda demostrado.
 
@@ -90,9 +93,21 @@ y : reverse ys ++ [y]
 como lado izq = lado der --> Queda demostrado.
 
 -------------------------------------------------------------------------------------------------
+QUIERO PROBAR reverse (x:xs) = reverse xs ++ [x]
+sabiendo que :
+{R0} reverse = foldl (flip (:)) []
 
+induccion en xs
 
+caos base
+reverse (x : []) = reverse [] ++ [x]
+reverse [x] = [x]
 
+caso inductivo
+reverse (x : (y:ys)) = reverse (y:ys) ++ [x]
 
-
-
+foldl (flip (:)) [] (x: (y:ys))
+foldl (flip (:)) (flip (:) [] x ) (y:ys)
+foldl (flip (:)) [x] (y:ys)
+foldl (flip (:)) (flip (:) [x] y) ys
+foldl (flip (:)) ([x,y]) ys
