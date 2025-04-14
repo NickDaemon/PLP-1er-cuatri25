@@ -1,6 +1,6 @@
 ## 1.1
 
-´´´haskell
+```haskell
 ∀ p::(a,b) . intercambiar (intercambiar p) = p
 {I} : intercambiar (x,y) = (y,x)
 
@@ -16,4 +16,4 @@ intercambiar (y,x) = (x,y)
 (x,y) = (x,y)   -- > Queda demostrado por definicion.
 
 ## 1.2
-´´´haskell
+```haskell
