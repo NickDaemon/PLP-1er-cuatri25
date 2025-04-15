@@ -212,7 +212,7 @@ length (f x : map f xs) = length (x:xs)
 
 1) Caso Base: P([])
 
-2) Caso inductivo: ∀ xs :: [a], x :: a, p:: a -> Bool, e :: a
+2) Caso inductivo: ∀ xs :: [a], x :: a
                    P(x) => P(x:xs)
 con P(x) ≡ ((elem e (filter p xs)) => (elem e xs))
 
@@ -227,8 +227,6 @@ False => False  -- > False => Q , es True para cualquier Q.
 -- Caso Inductivo:
 
 {HI} ((elem e (filter p xs)) => (elem e xs))
--- En particular , si elem e (filter p xs) = False , no tendria nada que probar.
--- Por lo tanto parto desde el caso elem e (filter p xs) = True.
 
 -- Qvq:
 {TI} ((elem e (filter p (x:xs))) => (elem e (x:xs)))
@@ -244,22 +242,41 @@ B) p x = False
 elem e (x : filter p xs) => elem e (x:xs)
 = {E1}
 e == x || elem e (filter p xs) => elem e (x:xs)
+                               = {E1}
+e == x || elem e (filter p xs) => e == x || elem e xs
+-- Por lema de generacion de bool , separo en casos:
+A.1) e == x
+A.2) e != x
+
+-- Caso A.1)
+True || elem (filter p xs) => True || elem e xs
+= {Bool}
+True => True -- > Queda demostrado A.1)
+
+-- Caso A.2)
+False || elem (filter p xs) => False || elem e xs
+= {Bool}
+elem (filter p xs) => elem e xs
 = {HI}
-e == x || True => elem e (x:xs)
-= {Bool}, {E1}
-True => e == x || elem e xs
--- Por {HI} se que elem e filter p xs = True.
--- Por lo tanto elem e xs = True.
-True => e == x || True -- > Queda demostrado caso A).
+True -- > Queda demostrado A.2)
 
 -- Caso B)
 elem e (filter p xs) => elem e (x:xs)
-= {HI}
-True => elem e (x:xs)
-= {E1}
-True => e == x || elem e xs
-= {HI}
-True => e == x || True -- > Queda demostrado Caso B)
+                     = {E1}
+elem e (filter p xs) => e == x || elem e xs
+-- Por lema de generacion de Bool separo en casos:
+B.1) elem e (filter p xs) = True
+B.2) elem e (filter p xs) = False
+
+-- Caso B.1)
+-- Por {HI} si elem e (filter p xs) = True entonces
+-- elem e xs = True
+True => e == x || True -- > Queda demostrado caso B.1)
+
+-- Caso B.2)
+False => e == x || elem e xs
+-- False => Q , es True para cualquier Q, Queda demostrado B.2)
+-- Por lo tanto vale caso B).
 
 -- Como vale caso A) y caso B) , queda demostrado P(x).
 ```
