@@ -227,8 +227,41 @@ False => False  -- > False => Q , es True para cualquier Q.
 -- Caso Inductivo:
 
 {HI} ((elem e (filter p xs)) => (elem e xs))
+-- En particular , si elem e (filter p xs) = False , no tendria nada que probar.
+-- Por lo tanto parto desde el caso elem e (filter p xs) = True.
 
+-- Qvq:
 {TI} ((elem e (filter p (x:xs))) => (elem e (x:xs)))
+
+(elem e (filter p (x:xs))) => elem e (x:xs)
+= {F1}
+elem e (if p x then x : filter p xs else filter p xs) => elem e (x:xs)
+-- Por lema de generacion de bool , separo en casos:
+A) p x = True
+B) p x = False
+
+-- Caso A)
+elem e (x : filter p xs) => elem e (x:xs)
+= {E1}
+e == x || elem e (filter p xs) => elem e (x:xs)
+= {HI}
+e == x || True => elem e (x:xs)
+= {Bool}, {E1}
+True => e == x || elem e xs
+-- Por {HI} se que elem e filter p xs = True.
+-- Por lo tanto elem e xs = True.
+True => e == x || True -- > Queda demostrado caso A).
+
+-- Caso B)
+elem e (filter p xs) => elem e (x:xs)
+= {HI}
+True => elem e (x:xs)
+= {E1}
+True => e == x || elem e xs
+= {HI}
+True => e == x || True -- > Queda demostrado Caso B)
+
+-- Como vale caso A) y caso B) , queda demostrado P(x).
 ```
 
 
