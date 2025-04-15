@@ -85,9 +85,3 @@ Lado der:
 h ((g . f) x)
 = {(.)}
 h (g (f x)) -- > Como lado izq = lado der , queda demostrado.
-
-
-
-
-
-
