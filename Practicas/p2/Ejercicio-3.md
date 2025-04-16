@@ -517,7 +517,7 @@ x  -- > Queda demostrado el caso inductivo.
 {Lema}: ∀ xs, ys :: [a], x :: a. head ((x:xs) ++ ys) = head (x:xs)
 
 -- Por induccion estructural sobre xs quiero ver que valen:
-1) Caso Base. ∀ x :: a. P([])
+1) Caso Base. P([])
 2) Caso Inductivo. ∀ y :: a. P(xs) => P(y:xs)
 
 -- Caso Base:
