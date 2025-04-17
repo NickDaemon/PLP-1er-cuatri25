@@ -1,16 +1,17 @@
 τ, σ :: = P | ⊥ | (τ ∧ σ) | (τ ⇒ σ) | (τ ∨ σ) | ¬ τ
 
-Uso induccion:
+```
+Uso induccion en la gramatica proposicional
+
+HI: Toda formula puede escribirse usando solo ¬ o ∨
 Caso base:
-τ = P  --> Se cumple ya que que en teoria no uso ni ==> ni $\neg$
+T = P  -- > Se cumple ya que al no usar conectores puedo decir que 
+            "use ¬ o ∨".
 
-Caso inductivo:
-{HI}: Cualquier formula de la logica proposicional puede escribirse usando solo 
-$\neg$ o $\vee$.
-
+Caso inductivo: 
 Disyuncion:
-T = A $\vee$ B
-Por HI $\exists$ A' $\equiv$ A y $\exists$ B' $\equiv$ B , tal que 
-A' Y B' son construidos usando solo $\neg$ o $\vee$.
-Por lo tanto T = A $\vee$ B $\equiv$ A' $\vee$ B' 
-Puedo construir T usando solo $\neg$ o $\vee$
+T = A ∨ B  
+Por HI: ∃ A' ≡ A y ∃ B' ≡ B,  
+tal que A' y B' usan solo ¬ o ∨  
+Entonces: T ≡ A' ∨ B'  -- > Se cumple la disyuncion.
+```
