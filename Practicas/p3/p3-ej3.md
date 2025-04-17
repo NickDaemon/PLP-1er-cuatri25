@@ -4,8 +4,6 @@
 Es tautologia.
 ```
 ## 3.2
-```
-¬ ⇒ ∧ 
 Queremos analizar la fórmula:
 
 $$
@@ -62,7 +60,7 @@ Como hay valuaciones que la hacen **verdadera** y otras que la hacen **falsa**, 
 
 > **Es una contingencia.**
 
-```
+
 ## 3.3
 ```
 ```
