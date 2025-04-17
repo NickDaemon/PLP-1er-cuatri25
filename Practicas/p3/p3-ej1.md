@@ -27,5 +27,5 @@ $$True \Leftrightarrow True\equiv$$
 $$True$$
 
 ## 1.7
-$ (\neg Q \land \neg S) \equiv (False \land True) \equiv False$
+$(\neg Q \land \neg S) \equiv (False \land True) \equiv False$
 
