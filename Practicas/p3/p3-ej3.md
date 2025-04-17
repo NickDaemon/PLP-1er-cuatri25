@@ -28,8 +28,8 @@ Vamos a probar diferentes valuaciones para ver si es una tautología, contradicc
 
 Evaluamos:
 
-- \( T \Rightarrow P \equiv \text{True} \Rightarrow \text{False} \equiv \text{False} \)
-- \( Q \Rightarrow C \equiv \text{True} \Rightarrow \text{False} \equiv \text{False} \)
+- $$( T \Rightarrow P \equiv \text{True} \Rightarrow \text{False} \equiv \text{False} )$$
+- $$( Q \Rightarrow C \equiv \text{True} \Rightarrow \text{False} \equiv \text{False} )$$
 
 Entonces:
 
@@ -45,8 +45,8 @@ $$
 
 Entonces:
 
-- \( T \Rightarrow P \equiv \text{False} \Rightarrow \_ \equiv \text{True} \)
-- \( Q \Rightarrow C \equiv \text{False} \Rightarrow \_ \equiv \text{True} \)
+- $$( T \Rightarrow P \equiv \text{False} \Rightarrow \_ \equiv \text{True})$$
+- $$( Q \Rightarrow C \equiv \text{False} \Rightarrow \_ \equiv \text{True})$$
 
 Entonces:
 
