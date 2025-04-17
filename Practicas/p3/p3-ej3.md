@@ -62,5 +62,29 @@ Como hay valuaciones que la hacen **verdadera** y otras que la hacen **falsa**, 
 
 
 ## 3.3
-```
-```
+Analizamos la fórmula:
+
+$$
+(P \Rightarrow Q) \lor (C \Rightarrow Q)
+$$
+
+La reescribimos:
+
+$$
+(\neg P \lor Q) \lor (\neg C \lor Q) \equiv \neg P \lor \neg C \lor Q
+$$
+
+Esto es equivalente a:
+
+$$
+P \Rightarrow (\neg C \lor Q)
+$$
+
+Esta fórmula es **una tautología**, porque:
+- Si \( P \) es falsa, la implicación es verdadera.
+- Si \( Q \) es verdadera, entonces todo vale.
+- Si \( C \) es falsa, también se cumple.
+
+Por lo tanto:
+
+> **\( (P \Rightarrow Q) \lor (C \Rightarrow Q) \) es tautología.**
