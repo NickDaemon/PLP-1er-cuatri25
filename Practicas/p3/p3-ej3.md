@@ -4,108 +4,77 @@
 Es tautologia.
 ```
 ## 3.2
-```text
+```
 Analizar: φ := (T ⇒ P) ∨ (Q ⇒ C)
 
-Queremos determinar si φ es:
-    - una tautología (siempre verdadera)
-    - una contradicción (siempre falsa)
-    - una contingencia (a veces verdadera, a veces falsa)
+Separo en terminos de ¬ y v
 
-Paso 1: Reescribimos usando equivalencias lógicas:
+φ := (¬T v P) v (¬Q v C)
 
-    T ⇒ P  ≡ ¬T ∨ P
-    Q ⇒ C  ≡ ¬Q ∨ C
+Como T ⇒ Q es tautologia se cumple que:
+V ⊨ T ⇒ Q  sii V ⊭ T  v V ⊨ Q
 
-Entonces:
+Como P ⇒ C es contradiccion se cumple que:
+V ⊭ P ⇒ C sii V ⊨ P v V ⊭ C
 
-    φ := (¬T ∨ P) ∨ (¬Q ∨ C)
-       ≡ ¬T ∨ P ∨ ¬Q ∨ C
+Teniendo en cuenta esto asigno valores de verdad y me fijo si φ
+puede tener distintas valuaciones:
 
-Ahora simplificamos la expresión lógica:
+Caso 1:
+T = True, P = True
+Q = True, C = True
 
-    φ ≡ (¬T ∨ ¬Q) ∨ (P ∨ C)
+φ := (¬T v P) v (¬Q v C)
+φ := (¬True v True) v (¬True v True) 
+φ := True v True 
+φ := **True**
 
-Paso 2: Evaluamos la verdad de φ con ejemplos
+Caso 2:
+T = True, P = False
+Q = True,  C = False
 
-Caso 1: Supongamos
-    T = True, P = False,
-    Q = True, C = False
+φ := (¬T v P) v (¬Q v C)
+φ := (¬True v False) v (¬True v False)
+φ := (False v False) v (False v False)
+φ := **False**
 
-    Entonces:
-        T ⇒ P = False
-        Q ⇒ C = False
-        φ = False ∨ False = False
-
-⇒ Existe una valuación donde φ es falsa
-
-Caso 2: Supongamos
-    T = False → ¬T = True
-    Entonces ¬T ∨ cualquier cosa = True
-
-⇒ En este caso φ es verdadera
-
-⇒ También hay valuaciones donde φ es verdadera
-
-Conclusión:
-
-    φ es una CONTINGENCIA
+Como φ tiene distintos valores de verdad segun T,Q,P y C concluyo que es contingencia.
 ```
-
-
 ## 3.3
-```text
-Sean:
+```
+Analizar: φ := (P ⇒ Q) ∨ (C ⇒ Q)
 
-    - T ⇒ Q es tautología
-        Entonces: para toda valuación V, se cumple:
-            V ⊭ T o V ⊨ Q
+Separo en terminos de ¬ y v
 
-    - P ⇒ C es contradicción
-        Entonces: para toda valuación V, se cumple:
-            V ⊨ P y V ⊭ C
+φ := (P ⇒ Q) ∨ (C ⇒ Q)
+φ := (¬P v Q) ∨ (¬C v Q)
+φ := ¬P v Q v ¬C v Q
+φ := ¬P v ¬C v Q
+P implica not C v Q
 
-Queremos analizar la fórmula:
+Como T ⇒ Q es tautologia se cumple que:
+V ⊨ T ⇒ Q  sii V ⊭ T  v V ⊨ Q
 
-    φ := (P ⇒ Q) ∨ (C ⇒ Q)
+Como P ⇒ C es contradiccion se cumple que:
+V ⊭ P ⇒ C sii V ⊨ P v V ⊭ C
 
-Equivalencia semántica de la disyunción:
+Caso 1:
+P = True, C = True, Q = False
 
-    V ⊨ φ  ↔  (V ⊭ P o V ⊨ Q) o (V ⊭ C o V ⊨ Q)
-           ↔  V ⊭ P ∨ V ⊭ C ∨ V ⊨ Q
+φ := ¬P v ¬C v Q
+φ := ¬True v ¬True v False
+φ := False v False v False
+φ := **False**
 
-Elegimos una valuación válida por la hipótesis (de la contradicción):
+Caso 2:
+P = False, C = True, Q = False
 
-    Supongamos V tal que:
-        V ⊨ P
-        V ⊭ C
-        V ⊭ Q
+φ := ¬P v ¬C v Q
+φ := ¬False v ¬True v False
+φ := True v False v False
+φ := **True**
 
-    Entonces:
-        V ⊭ P → False
-        V ⊭ C → True
-        V ⊨ Q → False
-
-        V ⊨ φ ↔ False ∨ True ∨ False = True
-
-Ahora veamos si existe una valuación que haga φ falsa:
-
-    Supongamos V tal que:
-        V ⊨ P
-        V ⊨ C
-        V ⊭ Q
-
-    Entonces:
-        P ⇒ Q → False (True ⇒ False)
-        C ⇒ Q → False (True ⇒ False)
-
-        φ := False ∨ False = False
-
-⇒ Existe una valuación donde φ es verdadera y otra donde es falsa.
-
-Conclusión:
-
-    φ es una CONTINGENCIA
+Como φ tiene distintos valores de verdad segun P,C y Q concluyo que es contingencia.
 ```
 
 
