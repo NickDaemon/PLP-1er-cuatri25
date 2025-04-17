@@ -66,7 +66,7 @@ Como T ⇒ Q es tautologia se cumple que:
 V ⊨ T ⇒ Q  sii V ⊭ T v V ⊨ Q
 
 Como P ⇒ C es contradiccion se cumple que:
-V ⊭ P ⇒ C sii V ⊨ P v ∧ V ⊭ C
+V ⊭ P ⇒ C sii V ⊨ P ∧ V ⊭ C
 
 Caso 1:
 P = True, C = False, Q = False
