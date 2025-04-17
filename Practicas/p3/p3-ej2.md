@@ -1,6 +1,7 @@
-τ, σ :: = P | ⊥ | (τ ∧ σ) | (τ ⇒ σ) | (τ ∨ σ) | ¬ τ
+```
+A, B, ... :: = P | ⊥ | (A ∧ B) | (A ⇒ B) | (A ∨ B) | ¬ A
 Uso induccion en la gramatica proposicional
-
+```
 ## Hipotesis inductiva
 Toda formula puede escribirse usando solo ¬ o ∨.
 
@@ -64,6 +65,19 @@ Entonces:
     A ⇒ B ≡ ¬A' ∨ B'     (por equivalencia de A ≡ A' y B ≡ B')
 
 Por lo tanto, podemos construir T usando solo ¬ y ∨.
+
+Demostracion: A ⇒ B ≡ ¬A ∨ B
+
+Dirección (⇒):
+    Supongamos  : V ⊨ A ⇒ B
+    entonces    : V ⊭ A v V ⊨ B
+    luego       : V ⊨ ¬A v V ⊨ B
+    Por lo tanto: V ⊨ ¬A v B
+
+Dirección (⇐):
+    Supongamos  : V ⊨ ¬A v B
+    entonces    : V ⊨ ¬A v V ⊨ B
+    por lo tanto: V ⊨ A ⇒ B  
 ```
 ## Disyuncion
 ```
