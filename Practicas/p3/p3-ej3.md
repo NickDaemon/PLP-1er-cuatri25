@@ -87,4 +87,4 @@ Esta fórmula es **una tautología**, porque:
 
 Por lo tanto:
 
-> **\( (P \Rightarrow Q) \lor (C \Rightarrow Q) \) es tautología.**
+>  $$(P \Rightarrow Q) \lor (C \Rightarrow Q) \ es tautología.$$
