@@ -29,19 +29,21 @@ Queremos probar que para toda valuación V:
 
 Dirección (⇒):
 
-    Supongamos: V ⊨ A ∧ B
-    Entonces:   V ⊨ A  y  V ⊨ B
-    Luego:      V ⊭ ¬A y  V ⊭ ¬B  --> V ⊨ A v B sii V ⊨ A v V ⊨ B
-                                      entonces : V ⊭ A v B sii V ⊭ ¬A y V ⊭ ¬B
-    Entonces:   V ⊭ (¬A ∨ ¬B)
+    Supongamos:   V ⊨ A ∧ B
+    Entonces:     V ⊨ A  y  V ⊨ B
+    Luego:        V ⊭ ¬A y  V ⊭ ¬B  --> (*)
+    Entonces:     V ⊭ (¬A ∨ ¬B)
     Por lo tanto: V ⊨ ¬(¬A ∨ ¬B)
+
+(*): como      V ⊨ A v B sii V ⊨ A v V ⊨ B
+     entonces  V ⊭ A v B sii V ⊭ A y V ⊭ B
 
 Dirección (⇐):
 
-    Supongamos: V ⊨ ¬(¬A ∨ ¬B)
-    Entonces:   V ⊭ (¬A ∨ ¬B)
-    Entonces:   V ⊭ ¬A  y  V ⊭ ¬B
-    Luego:      V ⊨ A   y  V ⊨ B
+    Supongamos:   V ⊨ ¬(¬A ∨ ¬B)
+    Entonces:     V ⊭ (¬A ∨ ¬B)
+    Entonces:     V ⊭ ¬A  y  V ⊭ ¬B
+    Luego:        V ⊨ A   y  V ⊨ B
     Por lo tanto: V ⊨ A ∧ B
 
 Conclusión:
@@ -67,16 +69,19 @@ Entonces:
 Por lo tanto, podemos construir T usando solo ¬ y ∨.
 
 Demostracion: A ⇒ B ≡ ¬A ∨ B
+Queremos probar que para toda valuación V:
+
+    V ⊨ A ⇒ B   sii   V ⊨ ¬A ∨ B
 
 Dirección (⇒):
-    Supongamos  : V ⊨ A ⇒ B
-    entonces    : V ⊭ A v V ⊨ B
-    luego       : V ⊨ ¬A v V ⊨ B
+    Supongamos:   V ⊨ A ⇒ B
+    entonces:     V ⊭ A v V ⊨ B
+    luego:        V ⊨ ¬A v V ⊨ B
     Por lo tanto: V ⊨ ¬A v B
 
 Dirección (⇐):
-    Supongamos  : V ⊨ ¬A v B
-    entonces    : V ⊨ ¬A v V ⊨ B
+    Supongamos:   V ⊨ ¬A v B
+    entonces:     V ⊨ ¬A v V ⊨ B
     por lo tanto: V ⊨ A ⇒ B  
 ```
 ## Disyuncion
