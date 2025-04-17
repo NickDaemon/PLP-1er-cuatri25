@@ -20,4 +20,12 @@ $$(True \land False) \equiv$$
 $$False$$
 
 ## 1.6
+$$(((P \vee S) \land (T \vee Q)) \Leftrightarrow (P \vee (S \land T) \vee Q))\equiv$$
+$$(((True \vee False) \land (False \vee True)) \Leftrightarrow (True \vee (False \land False) \vee True))\equiv$$
+$$True \land True \Leftrightarrow True \equiv$$
+$$True \Leftrightarrow True\equiv$$
+$$True$$
+
+## 1.7
+$ (\neg Q \land \neg S) \equiv (False \land True) \equiv False$
 
