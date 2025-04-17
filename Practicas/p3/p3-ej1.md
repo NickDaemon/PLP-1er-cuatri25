@@ -14,7 +14,7 @@ False \Leftrightarrow False \equiv
 True$
 
 ## 1.5
-$((P \vee S) \land (T \land Q)) \equiv \\
- ((True \vee False) \land (False \land True)) \equiv \\
- (True \land False) \equiv \\
+$((P \vee S) \land (T \land Q)) \equiv \par
+ ((True \vee False) \land (False \land True)) \equiv \par
+ (True \land False) \equiv \par
  False$
