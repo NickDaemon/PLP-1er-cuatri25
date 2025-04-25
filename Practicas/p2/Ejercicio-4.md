@@ -14,7 +14,7 @@ reverse . reverse = id
 -- Usando induccion estructural sobre xs quiero ver que vale:
 
 1) Caso Base. P([])
-2) Caso Inductivo. ∀ x :: a. P(x) => P(x:xs)
+2) Caso Inductivo. ∀ x :: a, xs :: [a]. P(x) => P(x:xs)
 
 -- Caso Base:
 reverse . reverse []             = id []
@@ -50,7 +50,7 @@ reverse (f x reverse xs)                            = id (x:xs)
 = {B}
 reverse (reverse xs ++ [x])                         = id (x:xs)
 = {Lema}
-x : reverse (reverse xs)                          = id (x:xs)
+x : reverse (reverse xs)                            = id (x:xs)
 = {HI}
 x : id xs                                           = id (x:xs)
 = {ID}

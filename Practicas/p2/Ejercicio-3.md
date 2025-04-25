@@ -24,7 +24,7 @@ length (duplicar []) = 2 * length []
 length [] = 2 * length []
 = {L0}
 0 = 2 * length []
-= {L0}
+  = {L0}
 0 = 0   -- > Vale el caso base
 
 -- Caso inductivo:
@@ -70,7 +70,7 @@ length (x : x : duplicar xs)
 
 1) Caso Base. P([])
 
-2) Caso Inductivo. ∀ xs::[a], ys::[a], x :: a. P(xs) => P(x:xs)
+2) Caso Inductivo. ∀ xs::[a], ys::[a], x :: a. (P(xs) => P(x:xs))
 con P(xs) ≡ length (xs ++ ys) = length xs + length ys
 
 -- Caso Base:
@@ -114,19 +114,19 @@ length (x : xs ++ ys)     = length (x:xs) + length ys
 -- Por induccion estructural sobre xs basta ver que valen:
 1) Caso Base. P([])
 
-2) Caso Inductivo. ∀ xs :: [a], y :: a. P(xs) => P(y:xs)
+2) Caso Inductivo. ∀ xs :: [a], y :: a. (P(xs) => P(y:xs))
 con P(xs) ≡ append [x] xs = (x:xs)
 
 -- Caso Base:
-append [x] [] = (x:[])
+append [x] []           = (x:[])
 = {A0}
-foldr (:) [] [x] = (x:[])
+foldr (:) [] [x]        = (x:[])
 = {DEF foldr}
 (:) x (foldr (:) [] []) = (x:[])
 = {DEF foldr}
-(:) x [] = (x : [])
+(:) x []                = (x:[])
 = {(:)}
-x : [] = x : []  -- > Queda demostrado el Caso Base.
+(x:[])                  = (x:[])  -- > Queda demostrado el Caso Base.
 
 -- Caso inductivo:
 
@@ -143,7 +143,7 @@ foldr (:) (y:xs) [x]        = (x:(y:xs))
 = {DEF foldr}
 (:) x (y:xs)                = (x:(y:xs))
 = {(:)}
-x : (y:xs)                  = x : (y:xs)
+(x:(y:xs))                  = (x:(y:xs))
 
 -- > Queda demostrado el Caso Inductivo.
 -- Por lo tanto queda demostrado P(xs).
@@ -165,7 +165,7 @@ x : (y:xs)                  = x : (y:xs)
 -- Por induccion estructural en xs quiero ver que valen:
 1) Caso Base. P([])
 
-2) Caso Inductivo. ∀ xs :: [a], x :: a. P(xs) => P(x:xs)
+2) Caso Inductivo. ∀ xs :: [a], x :: a. (P(xs) => P(x:xs))
 con P(xs) ≡ length (map f xs) = length xs
 
 -- Caso Base:
@@ -212,8 +212,7 @@ length (f x : map f xs) = length (x:xs)
 
 1) Caso Base. P([])
 
-2) Caso Inductivo. ∀ xs :: [a], x :: a
-                   P(x) => P(x:xs)
+2) Caso Inductivo. ∀ xs :: [a], x :: a. (P(xs) => P(x:xs))
 con P(xs) ≡ ((elem e (filter p xs)) => (elem e xs))
 
 -- Caso Base
@@ -296,18 +295,17 @@ False => e == x || elem e xs
 
 1) Caso Base. P([])
 
-2) Caso Inductivo. ∀ y :: a
-                   P(xs) => P(y:xs)
+2) Caso Inductivo. ∀ y :: a. (P(xs) => P(y:xs))
 con P(xs) ≡ ponerAlFinal x xs = xs ++ (x:[])
 
 -- Caso Base:
-ponerAlFinal x [] = [] ++ (x:[])
+ponerAlFinal x []   = [] ++ (x:[])
 = {P0}
 foldr (:) (x:[]) [] = [] ++ (x:[])
 = {DEF foldr}
-(x:[]) = [] ++ (x:[])
-       = {++0}
-(x:[]) = (x:[])   -- > Queda demostado el caso base.
+(x:[])              = [] ++ (x:[])
+                    = {++0}
+(x:[])              = (x:[])   -- > Queda demostado el caso base.
 
 -- Caso inductivo:
 
@@ -326,9 +324,9 @@ foldr (:) (x:[]) (y:xs)     = (y:xs) ++ (x:[])
 = {HI}
 (:) y (xs ++ (x:[]))        = (y:xs) ++ (x:[])
                             = {++1}
-(:) y (xs ++ (x:[]))        = y : (xs ++ (x:[]))
+(:) y (xs ++ (x:[]))        = (y : (xs ++ (x:[])))
 = {(:)}
-y : (xs ++ (x:[]))          = y : (xs ++ (x:[])) 
+(y : (xs ++ (x:[])))        = (y : (xs ++ (x:[]))) 
 -- Con esto queda demostrado el caso inductivo.
 -- Por lo tanto queda demostrado P(xs).
 ```
@@ -347,7 +345,7 @@ reverse = foldr (\x rec -> rec ++ (x:[])) []
 
 1) Caso Base. P([])
 
-2) Caso Inductivo. ∀ x :: a. P(xs) => P(x:xs)
+2) Caso Inductivo. ∀ x :: a.  (P(xs) => P(x:xs))
 Con P(xs) ≡ reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
 
 -- Caso Base:
@@ -394,7 +392,7 @@ reverse xs ++ [x]
 -- Por induccion estructural sobre ys quiero ver que valen:
 
 1) Caso Base. P([])
-2) Caso Inductivo. ∀ x :: a. P(xs) => P(x:xs)
+2) Caso Inductivo. ∀ x :: a, xs :: [a]. (P(xs) => P(x:xs))
 
 -- Caso Base.
 reverse [] ++ ys             = foldl (flip (:)) ys []
@@ -460,7 +458,7 @@ reverse xs ++ (x:ys)
 -- Por induccion estructural sobre xs quiero ver que valen:
 1) Caso Base. P([])
 
-2) Caso Inductivo. ∀ y :: a. P(xs) => P(y:xs)
+2) Caso Inductivo. ∀ y :: a, xs :: [a]. (P(xs) => P(y:xs))
 con P(xs) ≡ head (reverse (ponerAlFinal x xs)) = x
 
 -- Caso Base:
@@ -518,7 +516,7 @@ x  -- > Queda demostrado el caso inductivo.
 
 -- Por induccion estructural sobre xs quiero ver que valen:
 1) Caso Base. P([])
-2) Caso Inductivo. ∀ y :: a. P(xs) => P(y:xs)
+2) Caso Inductivo. ∀ y :: a, xs :: [a]. (P(xs) => P(y:xs))
 
 -- Caso Base:
 head ((x:[]) ++ ys)   = head (x:xs)

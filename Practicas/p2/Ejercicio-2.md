@@ -4,26 +4,31 @@
 flip . flip = id
 
 -- Usando extensionalidad funcional quiero ver que:
-∀ f :: (a -> b -> c), x :: a, y :: b
-flip . flip f x y = id f x y
+∀ f :: (a -> b -> c)
+flip . flip f = id f 
 
 -- Definiciones:
-{F} : flip f x y = f y x
+{F} : flip f  = (\x y -> f y x)
 {(.)} : f . g x = f (g x)
 
-Lado izq:
-flip . flip f x y
+--Lado izq:
+flip . flip f 
 = {(.)}
-flip (flip f) x y
+flip (flip f) 
 = {F}
-flip f y x
+flip (\x y -> f y x)
 = {F}
-f x y
+(\x y -> (\a b -> f b a) y x)
+= {B} dos veces
+(\x y -> f x y)
 
-Lado der:
-id f x y
+
+--Lado der:
+id f 
 = {ID}
-f x y    -- > Como lado izq = lado der queda demostrado.
+f  
+= {DEf f}
+(\x y -> f x y)  -- > Como lado izq = lado der queda demostrado.
 ```
 
 ## 2.2
