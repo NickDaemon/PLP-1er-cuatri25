@@ -50,3 +50,4 @@ foldr (\x rec -> f x && rec) True es all f.
 * Corregir justificaciones de los ejercicios 2, 3 y 9.
 * Corregir demostración del ejercicio 10.
 * El resto de los comentarios son opcionales para la reentrega. Pero por favor asimilen el feedback para el parcial.
+
