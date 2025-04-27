@@ -106,61 +106,60 @@ x : (reverse xs ++ [y])
 ```
 ## 4.2
 ```haskell
-append = (++)
+
+
+-- Definiciones :
+{A0} append [] = (\ys -> ys)
+{A1} append xs = (\ys -> foldr (:) ys xs)
+
+{++0} (++) []     = (\ys -> ys)
+{++1} (++) (x:xs) = (\ys -> x : (xs ++ ys))
 
 -- Por extensionalidad funcional quiero ver que:
-∀ xs,ys :: [a]
-append xs ys = (++) xs ys
+∀ xs :: [a] => append xs = (++) xs
 
--- Definiciones:
--- append :: [a] -> [a] -> [a]
-{A0} append xs ys = foldr (:) ys xs
+-- Uso induccion estructural en xs
+-- Basta ver que
 
--- (++) :: [a] -> [a] -> [a]
-{++0} [] ++ ys = ys
-{++1} (x:xs) ++ ys = x : (xs ++ ys)
-
--- Usando induccion estructural sobre xs quiero ver que valen:
 1) Caso Base. P([])
-2) Caso Inductivo. ∀ x :: a. P(xs) => P(x:xs)
-con P(x) : append xs ys = (++) xs ys
+2) Caso Inductivo. ∀ x :: a, xs :: [a] => (P(xs) => P(x:xs))
+con P(xs) : append xs = (++) xs
 
 -- Caso Base:
-append [] ys    = (++) [] ys
+append [] = (++) []
 = {A0}
-foldr (:) ys [] = (++) [] ys
-= {DEf foldr}
-ys              = (++) [] ys
-                = {++0}
-ys              = ys -- > Queda demostrado el caso base.
+(\ys -> ys) = (++) []
+= {++0}
+(\ys -> ys) = (\ys -> ys)
+-- Se cumple el caso base
 
 -- Caso Inductivo:
-
-{HI} : append xs ys = (++) xs ys
+{HI} : append xs = (++) xs
 
 -- Qvq:
-{TI} : append (x:xs) ys = (++) (x:xs) ys
+{TI} : append (x:xs) = (++) (x:xs)
 
--- Lado izq:
-append (x:xs) ys
-= {A0}
-foldr (:) ys (x:xs)
-= {foldr}
-(:) x (foldr (:) ys xs)
-= {A0}
-(:) x (append xs ys)
+-- Lado Izq:
+append (x:xs)
+= {A1}
+(\ys -> foldr (:) ys (x:xs))
+= {DEF foldr}
+(\ys -> (:) x (foldr (:) ys xs))
+= {A1} -- > append xs = (\ys -> foldr (:) ys xs)
+--          append xs ys = foldr (:) ys xs
+(\ys -> (:) x (append xs ys))
 = {HI}
-(:) x ((++) xs ys)
-= {(:)}
-x : ((++) xs ys)
+(\ys -> (:) x ((++) xs ys))
+= {Aplicacion (++)}
+(\ys -> (:) x (xs ++ ys))
 
--- Lado der:
-(++) (x:xs) ys
+-- Lado Der:
+(++) (x:xs)
 = {++1}
-x : ((++) xs ys)
+(\ys -> (:) x (xs ++ ys))
 
--- > Como lado izq = lado der , queda demostrado el caso inductivo
--- Por lo tanto queda demostrado P(xs).
+-- Como lado izq = lado der , demuestro el caso inductivo.
+
 ```
 ## 4.3
 ```haskell

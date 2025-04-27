@@ -68,10 +68,10 @@ indentar n (indentar m x) = indentar (n+m) x
 Basta ver que valen:
 
 1) Caso Base : P(Vacio)
-2) Caso inductivo I : ∀ s :: String.      P(x) ⟹ P(Texto s x)
-3) Caso Inductivo II: ∀ i :: Int , i ≥ 0. P(x) ⟹ P(Linea i x)
+2) Caso inductivo I : ∀ s :: String,  ∀ x :: Doc.     P(x) ⟹ P(Texto s x)
+3) Caso Inductivo II: ∀ i :: Int , i ≥ 0, ∀ x :: Doc. P(x) ⟹ P(Linea i x)
 
-Con P(x) ≡ ∀ n,m :: Int. (n ≥ 0 && m ≥ 0)
+Con P(x) ≡ ∀ n,m :: Int. (n ≥ 0 && m ≥ 0) ⟹ 
            indentar n (indentar m x) = indentar (n+m) x
 
 1) Caso Base:

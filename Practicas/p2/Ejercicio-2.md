@@ -8,10 +8,10 @@ flip . flip = id
 flip . flip f = id f 
 
 -- Definiciones:
-{F} : flip f  = (\x y -> f y x)
-{(.)} : f . g x = f (g x)
+-- {F} : flip f  = (\x y -> f y x)
+-- {(.)} : f . g x = f (g x)
 
---Lado izq:
+-- Lado izq:
 flip . flip f 
 = {(.)}
 flip (flip f) 

@@ -70,7 +70,7 @@ length (x : x : duplicar xs)
 
 1) Caso Base. P([])
 
-2) Caso Inductivo. ∀ xs::[a], ys::[a], x :: a. (P(xs) => P(x:xs))
+2) Caso Inductivo. ∀ xs :: [a], ys :: [a], x :: a. (P(xs) => P(x:xs))
 con P(xs) ≡ length (xs ++ ys) = length xs + length ys
 
 -- Caso Base:
@@ -115,7 +115,7 @@ length (x : xs ++ ys)     = length (x:xs) + length ys
 1) Caso Base. P([])
 
 2) Caso Inductivo. ∀ xs :: [a], y :: a. (P(xs) => P(y:xs))
-con P(xs) ≡ append [x] xs = (x:xs)
+con P(xs) ≡ ∀ x :: a. => append [x] xs = (x:xs)
 
 -- Caso Base:
 append [x] []           = (x:[])
@@ -166,7 +166,7 @@ foldr (:) (y:xs) [x]        = (x:(y:xs))
 1) Caso Base. P([])
 
 2) Caso Inductivo. ∀ xs :: [a], x :: a. (P(xs) => P(x:xs))
-con P(xs) ≡ length (map f xs) = length xs
+con P(xs) ≡ ∀ f :: (a->b) => length (map f xs) = length xs
 
 -- Caso Base:
 length (map f []) = length []
@@ -213,7 +213,7 @@ length (f x : map f xs) = length (x:xs)
 1) Caso Base. P([])
 
 2) Caso Inductivo. ∀ xs :: [a], x :: a. (P(xs) => P(x:xs))
-con P(xs) ≡ ((elem e (filter p xs)) => (elem e xs))
+con P(xs) ≡ ∀ p::a->Bool .∀ e::a => ((elem e (filter p xs)) => (elem e xs))
 
 -- Caso Base
 ((elem e (filter p [])) => (elem e []))
@@ -295,8 +295,8 @@ False => e == x || elem e xs
 
 1) Caso Base. P([])
 
-2) Caso Inductivo. ∀ y :: a. (P(xs) => P(y:xs))
-con P(xs) ≡ ponerAlFinal x xs = xs ++ (x:[])
+2) Caso Inductivo. ∀ y :: a, ∀ xs :: [a]. (P(xs) => P(y:xs))
+con P(xs) ≡ ∀ x :: a. => ponerAlFinal x xs = xs ++ (x:[])
 
 -- Caso Base:
 ponerAlFinal x []   = [] ++ (x:[])
@@ -389,7 +389,7 @@ reverse xs ++ [x]
 -- Pruebo Lema
 {Lema}: ∀ xs, ys :: [a]. reverse xs ++ ys = foldl (flip (:)) ys xs
 
--- Por induccion estructural sobre ys quiero ver que valen:
+-- Por induccion estructural sobre xs quiero ver que valen:
 
 1) Caso Base. P([])
 2) Caso Inductivo. ∀ x :: a, xs :: [a]. (P(xs) => P(x:xs))
@@ -436,7 +436,7 @@ foldl (flip (:)) (x:ys) xs
 = {HI}
 reverse xs ++ (x:ys) 
 
--- Como lado izq = lado der ,  queda demostrado el Caso inductivo.
+-- Como lado izq = lado der , queda demostrado el Caso inductivo.
 -- Por lo tanto queda demostrado P(xs) , entonces queda probado el lema.
 
 -- Falta probar A ++ B ++ C = A ++ (B ++ C) uwu.
@@ -514,32 +514,21 @@ x  -- > Queda demostrado el caso inductivo.
 -- Demuestro Lema
 {Lema}: ∀ xs, ys :: [a], x :: a. head ((x:xs) ++ ys) = head (x:xs)
 
--- Por induccion estructural sobre xs quiero ver que valen:
-1) Caso Base. P([])
-2) Caso Inductivo. ∀ y :: a, xs :: [a]. (P(xs) => P(y:xs))
+-- Usando principio del reemplazo , demuestro que el lema vale por definicion.
 
--- Caso Base:
-head ((x:[]) ++ ys)   = head (x:xs)
+-- Lado izq:
+head ((x:xs) ++ ys)
 = {++1}
-head (x : ([] ++ ys)) = head (x:xs)
-= {DEF head}
-x                     = x    -- > Queda demostrado el caso base.
+head (x : (xs ++ ys))
+= {Def head}
+x
 
--- Caso inductivo:
+-- Lado der:
+head (x:xs)
+= {Def head}
+x
 
-{HI}: head ((x:xs) ++ ys) = head (x:xs)
-
--- Qvq:
-{TI}: head ((x:(y:xs)) ++ ys) = head (x:(y:xs))
-
-head ((x:(y:xs)) ++ ys)       = head (x:(y:xs))
-= {++1}
-head (x : ((y:xs) ++ ys))     = head (x:(y:xs))
-= {DEF head}
-x                             = x
-
--- > Queda demostrado el caso inductivo.
--- Por lo tanto queda demostrado P(xs)
+-- Queda demostrado por definicion.
 ```
 
 
