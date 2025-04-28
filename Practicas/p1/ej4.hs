@@ -1,0 +1,1 @@
+permutaciones :: [a] -> [[a]]

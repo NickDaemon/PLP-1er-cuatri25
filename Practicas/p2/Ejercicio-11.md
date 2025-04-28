@@ -82,7 +82,7 @@ elem e ((inorder i) ++ (r:inorder d))
 elem e (inorder i) || elem e (r:inorder d)
 = {E0}
 elem e (inorder i) || foldr (\x rec -> (e == x) || rec) False (r:inorder d)
-= {F1}
+= {F1} -- > llamo h = (\x rec -> (e == x) || rec)
 elem e (inorder i) || h r (foldr h False inorder d)
 = {EF}
 elem e (inorder i) || (\x -> (rec -> (e == x) || rec)) r (elem e (inorder d))

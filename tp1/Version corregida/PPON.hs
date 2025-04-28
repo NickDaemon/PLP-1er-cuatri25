@@ -45,22 +45,13 @@ aplanar = foldDoc vacio fTexto fLinea
     fLinea _ acc = texto " " <+> acc
 
 -- Ejercicio 9
-pponADoc :: PPON -> Doc
-pponADoc ppon = case ppon of
+
+pponAdoc :: PPON -> Doc
+pponAdoc ppon = case ppon of
   TextoPP s      -> texto (show s)
   IntPP i        -> texto (show i)
   ObjetoPP lista -> if pponObjetoSimple ppon then aplanar docs else docs
     where
-      docs = entreLlaves (map parAdoc lista)
-      parAdoc (s, ppon') = texto (show s) <+> texto ": " <+> pponADoc ppon' 
-     
+      docs = entreLlaves (foldr parAdoc [] lista)
+      parAdoc (s, ppon') rec = (texto (show s) <+> texto ": " <+> pponAdoc ppon') : rec
 
--- Es recursion estructural por que:
-
--- En los casos bases no recurrimos a funciones recursivas ya que no contienen subcomponentes de tipo PPON. 
--- La función simplemente combina los parámetros en un valor del tipo Doc.
-
--- En los casos recursivos la construccion del resultado solo se realiza utilizando los parámetros que no son de tipo PPON. 
--- (las claves s que se obtienen en cada par).
--- Y se invoca recursivamente pponADoc exclusivamente sobre cada parámetro de tipo PPON.
--- Sin hacer otros llamados recursivos, y sin usar estos parámetros.
