@@ -10,15 +10,13 @@ data PPON
 
 -- Ejercicio 5
 pponAtomico :: PPON -> Bool
-pponAtomico ppon = case ppon of
-  ObjetoPP _ -> False
-  _          -> True
+pponAtomico = foldPPON (const True) (const True) (const False)
 
 -- Ejercicio 6
 pponObjetoSimple :: PPON -> Bool
 pponObjetoSimple ppon = case ppon of
-  ObjetoPP lista -> foldr (\(_,ppon') acc -> pponAtomico ppon' && acc) True lista
-  _              -> False
+  ObjetoPP xs -> all (pponAtomico . snd) xs
+  _           -> False
 
 -- Ejercicio 7
 intercalar :: Doc -> [Doc] -> Doc
@@ -45,22 +43,22 @@ aplanar = foldDoc vacio fTexto fLinea
     fLinea s acc = texto " " <+> acc
 
 -- Ejercicio 9
+foldPPON :: (String -> b) -> (Int -> b) -> ([(String, b)] -> b) -> PPON -> b 
+foldPPON fString fInt fLista ppon = case ppon of
+  TextoPP s   -> fString s
+  IntPP i     -> fInt i
+  ObjetoPP xs -> fLista (map fPPON xs)
+    where
+      fPPON (s',ppon') = (s', foldPPON fString fInt fLista ppon')
+
 pponADoc :: PPON -> Doc
-pponADoc ppon = case ppon of
-  TextoPP s      -> texto (show s)
-  IntPP i        -> texto (show i)
-  ObjetoPP lista -> if pponObjetoSimple (ObjetoPP lista) then fSimple lista else fRec lista
+pponADoc ppon = if pponObjetoSimple ppon then aplanar docs else docs
   where
-    fSimple lista      = aplanar (entreLlaves (map parAdoc lista))
-    fRec lista         = entreLlaves (map parAdoc lista)
-    parAdoc (s, ppon') = texto (show s) <+> texto ": " <+> pponADoc ppon'
+    docs = foldPPON (texto . show) (texto . show) aDoc ppon
+    aDoc xs = entreLlaves (map (\(s, d) -> texto (show s) <+> texto ": " <+> d) xs)
+            
+      
+      
+      
 
--- Es recursion estructural por que:
 
--- En los casos bases no recurrimos a funciones recursivas ya que no contienen subcomponentes de tipo PPON. 
--- La función simplemente combina los parámetros en un valor del tipo Doc.
-
--- En los casos recursivos la construccion del resultado solo se realiza utilizando los parámetros que no son de tipo PPON. 
--- (las claves s que se obtienen en cada par).
--- Y se invoca recursivamente pponADoc exclusivamente sobre cada parámetro de tipo PPON.
--- Sin hacer otros llamados recursivos, y sin usar estos parámetros.

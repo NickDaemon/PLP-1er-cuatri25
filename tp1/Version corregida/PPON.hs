@@ -16,9 +16,9 @@ pponAtomico ppon = case ppon of
 
 -- Ejercicio 6
 pponObjetoSimple :: PPON -> Bool
-pponObjetoSimple (ObjetoPP lista) = all (pponAtomico . snd) lista
-pponObjetoSimple _                = False
-
+pponObjetoSimple ppon = case ppon of
+  ObjetoPP xs -> all (pponAtomico . snd) xs 
+  _           -> False
 
 -- Ejercicio 7
 intercalar :: Doc -> [Doc] -> Doc
@@ -55,3 +55,18 @@ pponAdoc ppon = case ppon of
       docs = entreLlaves (foldr parAdoc [] lista)
       parAdoc (s, ppon') rec = (texto (show s) <+> texto ": " <+> pponAdoc ppon') : rec
 
+{-
+
+Es recursión primitiva por que:
+
+    - Cada caso base se escribe combinando los parámetros que no son del tipo PPON.
+    
+    - El caso recursivo se escribe combinando los valores que no son del tipo PPON
+      (en este caso los string s), y el llamado recursivo sobre los parámetros 
+      que sí son del tipo PPON.
+
+    - Pero además , como "usamos" el parámetro del tipo PPON cuando hacemos 
+      pponObjetoSimple ppon, no podemos considerarla recursión estructural 
+      sino primitiva.
+
+-}

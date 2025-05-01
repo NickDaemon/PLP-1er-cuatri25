@@ -153,7 +153,6 @@ mapPares f = foldr (\(x,y) acc -> f x y : acc ) []
 armarPares :: [a] -> [b] -> [(a,b)]
 armarPares xs ys = (foldr step (\bs -> []) xs) ys
   where
-    step :: a -> ([b] -> [(a,b)]) -> ([b] -> [(a,b)])
     step x acc ys = case ys of
       []      -> []
       (y:ys') -> (x,y) : acc ys'
