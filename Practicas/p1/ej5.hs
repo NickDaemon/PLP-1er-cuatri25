@@ -29,7 +29,7 @@ por la estructura de cada una (tomando su cabeza y recurriendo sobre su cola).
 
 -- Con foldr seria:
 entrelazarF :: [a] -> [a] -> [a]
-entrelazarF xs ys = foldr step id xs ys
+entrelazarF = foldr step id 
     where
         step x rec ys = case ys of
             [] -> x : rec []
