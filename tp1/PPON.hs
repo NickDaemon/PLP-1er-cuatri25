@@ -43,19 +43,7 @@ aplanar = foldDoc vacio fTexto fLinea
     fLinea s acc = texto " " <+> acc
 
 -- Ejercicio 9
-foldPPON :: (String -> b) -> (Int -> b) -> ([(String, b)] -> b) -> PPON -> b 
-foldPPON fString fInt fLista ppon = case ppon of
-  TextoPP s   -> fString s
-  IntPP i     -> fInt i
-  ObjetoPP xs -> fLista (map fPPON xs)
-    where
-      fPPON (s',ppon') = (s', foldPPON fString fInt fLista ppon')
 
-pponADoc :: PPON -> Doc
-pponADoc ppon = if pponObjetoSimple ppon then aplanar docs else docs
-  where
-    docs = foldPPON (texto . show) (texto . show) aDoc ppon
-    aDoc xs = entreLlaves (map (\(s, d) -> texto (show s) <+> texto ": " <+> d) xs)
             
       
       
