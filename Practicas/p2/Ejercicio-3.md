@@ -330,5 +330,196 @@ y : (xs ++ (x:[]))          = {++1}
 ```
 ## 3.7
 ```haskell
+-- Definiciones:
+-- reverse :: [a] -> [a]
+{R0} reverse xs = foldl (flip (:)) [] xs
+
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+{F0} foldr f z [] = z
+{F1} foldr f z (x:xs) = f x (foldr f z xs)
+
+-- foldl :: (b -> a -> b) -> b -> [a] -> b
+{FL0} foldl f z [] = z
+{FL1} foldl f z (x:xs) = foldl f (f z x) xs
+
+-- flip :: (a -> b -> c) -> b -> a -> c
+{F} flip f x y = f y x
+
+-- Quiero probar que:
 reverse = foldr (\x rec -> rec ++ (x:[])) []
+
+-- Por extensionalidad funcional basta ver que:
+∀ xs :: [a]. reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
+
+-- Usando induccion estructural sobre xs , basta ver que valen:
+1) Caso Base. P([])
+2) Caso Inductivo. ∀ xs :: [a]. ∀ x :: a.  P(xs) => P(x:xs)
+Con P(xs) = reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
+
+-- Caso Base:
+reverse [] = foldr (\x rec -> rec ++ (x:[])) [] []
+
+-- Lado izq:
+reverse []             = {R0}
+foldl (flip (:)) [] [] = {FL0}
+[]                     = {F0}
+
+-- Lado deR:
+foldr (\x rec -> rec ++ (x:[])) [] [] = {F0}
+[]
+
+{- Queda demostrado el caso base. -}
+
+-- Caso Inductivo:
+-- Sea
+{HI}: P(xs) = reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
+
+-- Qvq:
+P(x:xs) = ∀ xs :: [a]. ∀ x :: a.  
+          reverse (x:xs) = foldr (\x rec -> rec ++ (x:[])) [] (x:xs)
+
+-- Lado izq:
+reverse (x:xs)                      = {R0}
+foldl (flip (:)) [] (x:xs)          = {FL1}
+foldl (flip (:)) (flip (:) [] x) xs = {F}
+foldl (flip (:)) (x:[]) xs          = {lema}
+reverse xs ++ (x:[])
+
+-- Lado der:
+foldr (\x rec -> rec ++ (x:[])) [] (x:xs)                           = {F1}
+(\x rec -> rec ++ (x:[])) x (foldr (\x rec -> rec ++ (x:[])) [] xs) = {B}
+(\rec -> rec ++ (x:[])) (foldr (\x rec -> rec ++ (x:[])) [] xs)     = {HI}
+(\rec -> rec ++ (x:[])) reverse xs                                  = {B}
+reverse xs ++ (x:[])
+{- Como lado izq = lado der, Queda demostrado caso inductivo. -}
+
+-- Pruebo lema:
+{lema} : ∀ xs, ys :: [a]. reverse xs ++ ys = foldl (flip (:)) ys xs
+
+-- Uso induccion estructural en xs, quiero ver que:
+1) Caso Base. P([])
+2) Caso Inductivo. ∀ xs :: [a], ∀ x :: a. P(xs) => P(x:xs)
+Con P(xs) = ∀ ys :: [a]. reverse xs ++ ys = foldl (flip (:)) ys xs
+
+-- Caso Base.
+reverse [] ++ ys = foldl (flip (:)) ys []
+
+-- Lado izq:
+reverse [] ++ ys             = {R0}
+foldl (flip (:)) [] [] ++ ys = {F0}
+[] ++ ys                     = {++0}
+ys
+
+-- Lado der:
+foldl (flip (:)) ys [] = {F0}
+ys
+{- Queda demostrado el caso base. -}
+
+-- Caso inductivo:
+-- Sea:
+{HI}: P(xs) = ∀ ys :: [a]. reverse xs ++ ys = foldl (flip (:)) ys xs
+
+-- Qvq:
+P(x:xs) = ∀ ys, xs :: [a]. ∀ x :: a.
+          reverse (x:xs) ++ ys = foldl (flip (:)) ys (x:xs)
+
+-- Lado izq:
+reverse (x:xs) ++ ys                      = {R0}
+foldl (flip (:)) [] (x:xs) ++ ys          = {FL1}
+foldl (flip (:)) (flip (:) [] x) xs ++ ys = {F}
+foldl (flip (:)) (x:[]) xs ++ ys          = {HI}
+reverse xs ++ (x:[]) ++ ys                = 
+
+-- Lado der:
+foldl (flip (:)) ys (x:xs)           = {FL1}
+foldl (flip (:)) (flip (:) ys x) xs  = {F}
+foldl (flip (:)) (x:ys) xs           = {HI}
+reverse xs ++ (x:ys)                 = {lema-2}
+reverse xs ++ (x:([] ++ ys))         = {++1}
+reverse xs ++ (x:[]) ++ ys
+
+{- Como lado izq = lado der, Queda demostrado caso Inductivo. -}
+
+-- Usando el principio de reemplazo, demuestro que vale por definicion lema-2:
+∀ ys, xs :: [a]. ∀ x :: a. (x:ys) = (x:([] ++ ys))
+
+(x:ys) = (x:([] ++ ys)) = {++0}
+(x:ys) = (x:ys)
+{- Queda demostrado lema-2. -}
 ```
+## 3.8
+```haskell
+-- Definiciones:
+
+-- head :: [a] -> a
+{H0} head []     = error "no hay head de lista vacia"
+{H1} head (x:xs) = x
+
+-- reverse 
+{R1} reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
+
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+{F0} foldr f z [] = z
+{F1} foldr f z (x:xs) = f x (foldr f z xs)
+
+-- ponerAlFinal :: a -> [a] -> [a]
+{P0} ponerAlFinal x = foldr (:) (x:[])
+
+-- Quiero probar que:
+∀ xs::[a] . ∀ x::a . head (reverse (ponerAlFinal x xs)) = x
+
+-- Usando induccion estructural sobre xs , basta ver que valen:
+1) Caso Base. P([])
+2) Caso Inductivo. ∀ xs :: [a] . ∀ y :: a. P(xs) => P(y:xs)
+Con P(xs) = ∀ x :: a . head (reverse (ponerAlFinal x xs)) = x
+
+-- Caso Base
+
+-- Lado izq:
+head (reverse (ponerAlFinal x []))               = {P0}
+head (reverse (foldr (:) (x:[]) []))             = {F0}
+head (reverse (x:[]))                            = {R0}
+head (foldr (\x rec -> rec ++ (x:[])) [] (x:[])) = {F1} 
+-- llamo f = (\x rec -> rec ++ (x:[]))
+head (f x (foldr f [] []))                       = {F0}
+head (f x [])                                    = {sintaxis f}
+head ((\x -> (\rec -> rec ++ (x:[])) x []))      = {B}
+head ((\rec -> rec ++ (x:[])) [])                = {B}
+head ([] ++ (x:[]))                              = {++0}
+head (x:[])                                      = {H1}
+x
+{- Como lado izq = lado der, queda demostrado el caso base. -}
+
+-- Caso Inductivo
+-- Sea:
+{HI}: P(xs) = ∀ x :: a . head (reverse (ponerAlFinal x xs)) = x
+
+-- Qvq:
+P(y:xs) = ∀ xs :: [a] . ∀ x, y :: a . head (reverse (ponerAlFinal x (y:xs))) = x
+
+-- Lado izq:
+head (reverse (ponerAlFinal x (y:xs)))         = {P0}
+head (reverse (foldr (:) (x:[]) (y:xs)))       = {F1}
+head (reverse ((:) y (foldr (:) (x:[]) xs)))   = {P0}
+head (reverse ((:) y (ponerAlFinal x xs)))     = {(:)}
+head (reverse (y : ponerAlFinal x xs))         = {R0}
+-- llamo f = (\x rec -> rec ++ (x:[]))
+head (foldr f [] (y: ponerAlFinal x xs))       = {F0}
+head (f y (foldr f [] (ponerAlFinal x xs)))    = {R0}
+head (f y (reverse (ponerAlFinal x xs)))       = {B} y {sintaxis f}
+head (\rec -> rec ++ (y:[]))                   = {B}
+head ((reverse (ponerAlFinal x xs)) ++ (y:[])) = {lema}
+head (reverse (ponerAlFinal x xs))             = {HI}
+x
+{- Como lado izq = lado der, Queda demostrado el caso Inductivo. -}
+
+-- Pruebo lema:
+∀ xs, ys :: [a] . ∀ x :: a. head ((x:xs) ++ ys) = head (x:xs)
+
+-- Usando el principio de reemplazo , pruebo que vale la igualdad por definicion.
+head ((x:xs) ++ ys) = head (x:xs) = {++1}
+head (x:(xs ++ ys)) = head (x:xs) = {H1}
+x = head (x:xs)                   = {H1}
+x = x
+{- Queda demostrado el lema.-}
+ ```

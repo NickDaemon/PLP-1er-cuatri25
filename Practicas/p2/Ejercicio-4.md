@@ -1,113 +1,136 @@
 ## 4.1
 ```haskell
-reverse . reverse = id
-
 -- Definiciones:
 -- reverse :: [a] -> [a]
-{R0} reverse xs = foldl (flip (:)) [] xs
 {R1} reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
-{R2} reverse xs ++ ys = foldl (flip (:)) ys xs
 
--- Por extensionalidad funcional quiero ver que:
+-- id :: a -> a
+{ID} id x = x
+
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+{F0} foldr f z [] = z
+{F1} foldr f z (x:xs) = f z (foldr f z xs)
+
+-- (.) :: (a -> b) -> (c -> a) -> c -> b
+{.} (f . g) x = f (g x)
+
+
+-- Quiero probar que:
+reverse . reverse = id
+
+-- Usando extensionalidad funcional , basta ver que:
 ∀ xs :: [a]. reverse . reverse xs = id xs
 
--- Usando induccion estructural sobre xs quiero ver que vale:
-
+-- Por induccion estructural sobre xs , quiero ver que valen:
 1) Caso Base. P([])
-2) Caso Inductivo. ∀ x :: a, xs :: [a]. P(x) => P(x:xs)
+2) Caso Inductivo. ∀ xs :: [a], ∀ x :: a. P(xs) => P(x:xs)
+con P(xs) = reverse . reverse xs = id xs
 
 -- Caso Base:
-reverse . reverse []             = id []
-= {(.)}
-reverse (reverse [])             = id []
-= {R0}
-reverse (foldl (flip (:)) [] []) = id []
-= {DEF foldl}
-reverse []                       = id []
-= {R0}
-foldl (flip (:)) [] []           = id []
-= {DEF foldl}
-[]                               = id []
-                                 = {ID}
-[]                               = []  -- > Queda demostrado el caso base.
+reverse . reverse [] = id []
+
+-- Lado izq
+reverse . reverse []                            = {.}
+reverse (reverse [])                            = {R0}
+reverse (foldr (\x rec -> rec ++ (x:[])) [] []) = {F0}
+reverse []                                      = {R0}
+(foldr (\x rec -> rec ++ (x:[])) [] [])         = {F0}
+[]                                              = {ID}
+id []
+-- Queda demostrado el caso Base.
+
+-- Caso Inductivo:
+-- Sea
+{HI} : P(xs) = reverse . reverse xs = id xs
+
+-- Qvq:
+P(x:xs) = ∀ xs :: [a], ∀ x :: a. reverse . reverse (x:xs) = id (x:xs)
+
+-- Lado izq:
+reverse . reverse (x:xs)                            = {.}
+reverse (reverse (x:xs))                            = {R1}
+reverse (foldr (\x rec -> rec ++ (x:[])) [] (x:xs)) = {F1}
+-- llamo f = (\x rec -> rec ++ (x:[]))
+reverse (f x (foldr f [] xs))                       = {R1}
+reverse (f x (reverse xs))                          = {B} dos veces
+reverse (reverse xs ++ (x:[]))                      = {lema}
+reverse (x:[]) ++ reverse (reverse xs)              = {HI}
+reverse (x:[]) ++ id xs                             = {R1}
+foldr f [] (x:[]) ++ id xs                          = {F1}
+f x (foldr f [] []) ++ id xs                        = {F0}
+f x [] ++ id xs                                     = {B} dos veces
+[] ++ (x:[]) ++ id xs                               = {++0}
+(x:[]) ++ id xs                                     = {ID}
+(x:[]) ++ xs                                        = {++1}
+(x:[] ++ xs)                                        = {++0}
+(x:xs)                                              = {ID}
+id (x:xs)
+{- Queda demostrado el caso inductivo. -}
+
+-- Pruebo lema:
+∀ xs, ys :: [a]. reverse (xs ++ ys) = reverse ys ++ reverse xs
+
+-- Uso induccion estructural sobre xs
+
+-- Caso Base:
+reverse ([] ++ ys) = reverse ys ++ reverse []                      = {++0}
+reverse ys = reverse ys ++ reverse []                              = {R1}
+reverse ys = reverse ys ++ (foldr (\x rec -> rec ++ (x:[])) [] []) = {F0} 
+reverse ys = reverse ys ++ []                                      = {lema-2}
+reverse ys = reverse ys
+{- Queda demostrado el caso base. -}
+
+-- Caso Inductivo:
+-- Sea:
+{HI}: P(xs) = ∀ ys :: [a]. reverse (xs ++ ys) = reverse ys ++ reverse xs
+
+-- Qvq:
+P(x:xs) = ∀ xs, ys :: [a], ∀ x :: a.  reverse ((x:xs) ++ ys) = reverse ys ++ reverse (x:xs)
+
+-- Lado Izq:
+reverse ((x:xs) ++ ys)             = {++1}
+reverse (x:(xs ++ ys))             = {R1}
+-- llamo f = (\x rec -> rec ++ (x:[]))
+foldr f [] (x:(xs ++ ys))          = {F1}
+f x (foldr f [] (xs ++ ys))        = {R1}
+f x (reverse (xs ++ ys))           = {B} dos veces
+reverse (xs ++ ys) ++ (x:[])       = {HI}
+reverse ys ++ reverse xs ++ (x:[]) 
+
+-- Lado der:
+reverse ys ++ reverse (x:xs)        = {R1}
+-- llamo f = (\x rec -> rec ++ (x:[]))
+reverse ys ++ foldr f [] (x:xs)     = {F1}
+reverse ys ++ (f x (foldr f [] xs)) = {R1}
+reverse ys ++ (f x reverse xs)      = {B} dos veces
+reverse ys ++ reverse xs ++ (x:[]) 
+
+{- Queda demostrado el caso inductivo.-}
+
+-- Pruebo lema-2
+∀ xs :: [a]. xs ++ [] = xs
+
+-- Por induccion estructural sobre xs ,quiero ver que valen
+1) Caso Base. P([])
+2) Caso Inductivo. P(xs) => P(x:xs)
+
+-- Caso Base
+[] ++ [] = [] = {++0}
+[] = []
+{- Queda demostrado Caso Base. -}
 
 -- Caso Inductivo:
 
-{HI}: reverse . reverse xs = id xs
+{HI} xs ++ [] = xs
 
 -- Qvq:
-{TI}: reverse . reverse (x:xs) = id (x:xs)
-
-reverse . reverse (x:xs)                            = id (x:xs)
-= {(.)}
-reverse (reverse (x:xs))                            = id (x:xs)
-= {R1}
-reverse (foldr (\x rec -> rec ++ (x:[])) [] (x:xs)) = id (x:xs)
-= {foldr} -- > llamo f = (\x rec -> rec ++ (x:[]))
-reverse (f x (foldr f [] xs))                       = id (x:xs)
-= {R0}
-reverse (f x reverse xs)                            = id (x:xs)
-= {B}
-reverse (reverse xs ++ [x])                         = id (x:xs)
-= {Lema}
-x : reverse (reverse xs)                            = id (x:xs)
-= {HI}
-x : id xs                                           = id (x:xs)
-= {ID}
-(x:xs)                                              = (x:xs)
-
--- Lema
-∀ xs :: [a], x :: a
-reverse (xs ++ [x]) = x : reverse xs
-
--- Uso induccion estructural en xs:
-
--- Caso base
-reverse ([] ++ [x]) = (x : reverse [])
-reverse [x] = x : reverse []
-[x] = [x]
-
--- Caso inductivo
-{HI}: reverse (xs ++ [x]) = x : reverse xs
-reverse (y:xs ++ [x]) = (x : reverse (y:xs))
-
--- Lado izq:
-reverse ((y:xs) ++ [x])
-= {++1}
-reverse (y:(xs ++ [x]))
-= {R1} -- > f = (\x rec -> rec ++ [x])
-foldr f [] (y:(xs ++ [x]))
-= {foldr}
-f y (foldr f [] (xs ++ [x]))
-= {B}
-(\rec -> rec ++ [y]) (foldr f [] (xs ++ [x]))
-= {R0}
-(\rec -> rec ++ [y]) (reverse (xs ++ [x]))
-= {B}
-reverse (xs ++ [x]) ++ [y]
-= {HI}
-(x : reverse xs) ++ [y]
-= {++1}
-x : (reverse xs ++ [y])
-
--- Lado der:
-x : (reverse (y:xs))
-= {R1} -- > f = (\x rec -> rec ++ [x])
-x : (foldr f [] (y:xs))
-= {foldr}
-x : (f y (foldr f [] xs))
-= {R0}
-x : (f y (reverse xs))
-= {B}
-x : (reverse xs ++ [y])
-
--- Como lado izq = lado der , queda demostrado el caso inductivo.
--- Por lo tanto queda demostrado el lema.
+(x:xs) ++ [] = (x:xs) = {++1}
+x:(xs ++ []) = (x:xs) = {HI}
+(x:xs) = (x:xs)
+{- Queda demostrado el caso inductivo. -}
 ```
 ## 4.2
 ```haskell
-
-
 -- Definiciones :
 {A0} append [] = (\ys -> ys)
 {A1} append xs = (\ys -> foldr (:) ys xs)
@@ -126,32 +149,25 @@ x : (reverse xs ++ [y])
 con P(xs) : append xs = (++) xs
 
 -- Caso Base:
-append [] = (++) []
-= {A0}
-(\ys -> ys) = (++) []
-= {++0}
+append [] = (++) []   = {A0}
+(\ys -> ys) = (++) [] = {++0}
 (\ys -> ys) = (\ys -> ys)
 -- Se cumple el caso base
 
 -- Caso Inductivo:
-{HI} : append xs = (++) xs
+{HI} : P(xs) = append xs = (++) xs
 
 -- Qvq:
-{TI} : append (x:xs) = (++) (x:xs)
+∀ x :: a, xs :: [a]. append (x:xs) = (++) (x:xs)
 
 -- Lado Izq:
-append (x:xs)
-= {A1}
-(\ys -> foldr (:) ys (x:xs))
-= {DEF foldr}
-(\ys -> (:) x (foldr (:) ys xs))
-= {A1} -- > append xs = (\ys -> foldr (:) ys xs)
---          append xs ys = foldr (:) ys xs
-(\ys -> (:) x (append xs ys))
-= {HI}
-(\ys -> (:) x ((++) xs ys))
-= {Aplicacion (++)}
-(\ys -> (:) x (xs ++ ys))
+append (x:xs) = {A1}
+(\ys -> foldr (:) ys (x:xs))     = {DEF foldr}
+(\ys -> (:) x (foldr (:) ys xs)) = {A1} 
+-- append xs = (\ys -> foldr (:) ys xs) => append xs ys = foldr (:) ys xs
+(\ys -> (:) x (append xs ys))    = {HI}
+(\ys -> (:) x ((++) xs ys))      = {++1}
+(\ys -> (:) x (xs ++ ys))        = 
 
 -- Lado Der:
 (++) (x:xs)
@@ -159,12 +175,9 @@ append (x:xs)
 (\ys -> (:) x (xs ++ ys))
 
 -- Como lado izq = lado der , demuestro el caso inductivo.
-
 ```
 ## 4.3
 ```haskell
-map id = id
-
 -- Definiciones
 {M0} : map f [] = []
 {M1} : map f (x:xs) = f x : map xs
@@ -184,20 +197,17 @@ map id [] = id []
 []        = []  -- > Queda demostrado el caos base
 
 -- Caso inductivo:
-{HI}: map id xs = id xs
+{HI}: P(xs): map id xs = id xs
 
 -- Qvq:
-{TI}: map id (x:xs) = id (x:xs)
+P(x:xs):∀ xs :: [a],∀ x :: a. map id (x:xs) = id (x:xs)
 
 -- lado izq:
-map id (x:xs)
-= {M1}
-id x : map id xs
-= {HI}
-id x : id xs
-= {DEF id}
-(x : xs)  -- > Como lado izq = lado der , queda probado el caso inductivo.
--- Por lo tanto queda demostrado P(xs)
+map id (x:xs)    = {M1}
+id x : map id xs = {HI}
+id x : id xs     = {DEF id}
+(x : xs)  
+{- Como lado izq = lado der , queda probado el caso inductivo. -}
 ```
 ## 4.4
 ```haskell
@@ -208,7 +218,7 @@ id x : id xs
 {M1} : map f (x:xs) = f x : map xs
 
 -- Por extensionalidad funcional quiero ver que:
-∀ xs :: a
+∀ xs :: [a]
 map (g . f) xs = map g . map f xs
 
 -- Usando induccion estructural en xs quiero ver que valen:
@@ -217,206 +227,180 @@ map (g . f) xs = map g . map f xs
 2) Caso Inductivo. ∀ x :: a. P(xs) => P(x:xs)
 
 -- Caso base
-map (g . f) [] = map g . map f []
-= {M0}
-[]             = map g . map f []
-               = {DEF (.)}
-[]             = map g (map f [])
-               = {M0}
-[]             = map g []
-               = {M0}
-[]             = []  -- > Queda demostrado el caso base.
+map (g . f) [] = map g . map f [] = {M0}
+[]             = map g . map f [] = {DEF (.)}
+[]             = map g (map f []) = {M0}
+[]             = map g []         = {M0}
+[]             = []  
+{- Queda demostrado el caso base. -}
 
 -- Caso inductivo
 
-{HI}: map (g . f) xs = map g . map f xs
+{HI}: P(xs): ∀ xs :: [a], ∀ f :: a -> b .∀ g :: b -> c  
+      map (g . f) xs = map g . map f xs
 
 -- Qvq:
-{TI}: map (g . f) (x:xs) = map g . map f (x:xs)
+P(x:xs): ∀ xs :: [a], ∀ f :: a -> b .∀ g :: b -> c, ∀ x :: a
+         map (g . f) (x:xs) = map g . map f (x:xs)
 
 -- Lado izq:
-map (g . f) (x:xs)
-= {M1}
-(g . f) x : map (g . f) xs
-= {HI}
-(g . f) x : map g . map f xs
-= {DEF (.)}
+map (g . f) (x:xs)           = {M1}
+(g . f) x : map (g . f) xs   = {HI}
+(g . f) x : map g . map f xs = {DEF (.)}
 g (f x) : map g (map f xs)
 
 -- Lado der:
-map g . map f (x:xs)
-= {DEF (.)}
-map g (map f (x:xs))
-= {M1}
-map g (f x : map f xs)
-= {M1}
+map g . map f (x:xs)   = {DEF (.)}
+map g (map f (x:xs))   = {M1}
+map g (f x : map f xs) = {M1}
 g (f x) : map g (map f xs)
 
--- > Como lado der = lado izq , queda probado el caso inductivo
--- Por lo tanto queda demostrado P(xs)
+{- Como lado der = lado izq , queda probado el caso inductivo. -}
+
 ```
 ## 4.5
 ```haskell
-∀ f::a->b .∀ p::b->Bool .map f . filter (p . f) = filter p . map f
-
 -- Definiciones:
 {M0} : map f [] = []
 {M1} : map f (x:xs) = f x : map xs
 
 {F0} : filter p [] = []
 {F1} : filter p (x:xs) = if p x then x : filter p xs else filter p xs
+
+-- Quiero probar que:
+∀ f :: a -> b .∀ p :: b -> Bool .map f . filter (p . f) = filter p . map f
  
--- Por extensionalidad funcional quiero ver que
+-- Por extensionalidad funcional basta ver que
+∀ xs :: [a]. ∀ f :: a -> b .∀ p :: b -> Bool .
+map f . filter (p . f) xs = filter p . map f xs
 
-∀ xs :: [a]. map f . filter (p . f) xs = filter p . map f xs
-
--- Usando induccion estructural sobre xs quiero ver que valen:
+-- Uso induccion estructural en xs
 1) Caso Base. P([])
-2) Caso Inductivo. ∀ x :: a. P(xs) => P(x:xs)
-con P(xs): map f . filter (p . f) xs = filter p . map f xs
-
--- Caso Base:
 map f . filter (p . f) [] = filter p . map f []
 
 -- Lado izq:
-map f . filter (p . f) []
-= {DEF (.)}
-map f (filter (p . f) [])
-= {F0}
-map f []
-= {M0}
+map f . filter (p . f) [] = {.}
+map f (filter (p . f) []) = {F0}
+map f ([])                = {M0}
 []
 
 -- Lado der:
-filter p . map f []
-= {DEF (.)}
-filter p (map f [])
-= {M0}
-filter p []
-= {F0}
-[]   
--- Como lado der = lado izq , queda demostrado el caso base.
+filter p . map f [] = {.}
+filter p (map f []) = {M0}
+filter p []         = {F0}
+[]
+{- Queda demostrado el caso base. -}
 
--- Caso inductivo:
-{HI}: map f . filter (p . f) xs = filter p . map f xs
-
+Caso Inductivo. ∀ xs :: [a].  ∀ x :: a
+                P(xs) => P(x:xs)
+-- Sea:
+{HI}: P(xs) = ∀ f :: a -> b . ∀ p :: b -> Bool .
+              map f . filter (p . f) xs = filter p . map f xs
 -- Qvq:
-{TI}: map f . filter (p . f) (x:xs) = filter p . map f (x:xs)
+P(x:xs) = ∀ f :: a -> b . ∀ p :: b -> Bool . ∀ xs :: [a]. ∀ x :: a
+          map f . filter (p . f) (x:xs) = filter p . map f (x:xs)
 
 -- Lado izq:
-map f . filter (p . f) (x:xs)
-= {DEF (.)}
-map f (filter (p . f) (x:xs))
-= {F1}
-map f (if (p . f) x then x : filter (p . f) xs else filter (p . f) xs)
--- Por lema de generacion de booleanos separo en casos:
+map f . filter (p . f) (x:xs)                                          = {.}
+map f (filter (p . f) (x:xs))                                          = {F1}
+map f (if (p . f) x then x : filter (p . f) xs else filter (p . f) xs) = {LGB}
+-- Separo en casos:
 A) (p . f) x = p (f x) = True
-B) (p . f) x = p (f x) = Falase
+B) (p . f) x = p (f x) = False
 
--- Caso A)
-map f (x : filter (p . f) xs)
-= {M1}
-f x : map f (filter (p . f) xs)
-= {DEF (.)}
-f x : map f . filter (p . f) xs
-= {HI}
-f x : filter p . map f xs
+-- Caso A:
+map f (x : filter (p . f) xs)     = {M1}
+f x : (map f (filter (p . f) xs)) = {HI}
+f x : (filter p . map f xs)       = {.}
+f x : (filter p (map f xs))
 
--- Caso B)
-map f (filter (p . f) xs)
-= {HI}
-filter p . map f xs
+-- Lado der
+filter p . map f (x:xs)                              = {.}
+filter p (map f (x:xs))                              = {M1}
+filter p (f x : map f xs)                            = {F1}
+-- llamo g = filter p  
+if p (f x) then f x : g (map f xs) else g (map f xs) = {Por estar en caso A}
+f x : (filter p (map f xs))   
+{- Queda demostrado caso A. -}     
+
+-- Caso B:
+map f (filter (p . f) xs) = {HI}
+filter p . map f xs       = {.}
+filter p (map f xs)
 
 -- Lado der:
-filter p . map f (x:xs)
-= {DEF (.)}
-filter p (map f (x:xs))
-= {M1}
-filter p (f x : map f xs)
-= {F1}
-(if p (f x) then f x : filter p map f xs else filter p (map f xs))
--- Por lema de generacion de bool separo en casos:
-A) p (f x) = True
-B) p (f x) = False
-
--- Caso A)
-f x : filter p map f xs 
--- > Como ambos casos A) coinciden y cuando es True en uno es True en el otro
---   queda demostrado el caso A)
-
--- Caso B)
+ilter p . map f (x:xs)                               = {.}
+filter p (map f (x:xs))                              = {M1}
+filter p (f x : map f xs)                            = {F1}
+-- llamo g = filter p  
+if p (f x) then f x : g (map f xs) else g (map f xs) = {Por estar en caso B}
 filter p (map f xs)
-= {DEF (.)}
-filter p . map f xs
--- > Como ambos casos B) coinciden y cuando es False en uno es False en el otro
---   queda demostrado el caso B) 
-
--- Por lo tanto queda demostrado caso inductivo.
+{- Queda demostrado caso B.-}
+{- Como valen caso A y B, queda demostrado caso inductivo.-}
 ```
 ## 4.6
 ```haskell
-∀ f::a->b .∀ e::a .∀ xs::[a] .((elem e xs) ⇒ (elem (f e) (map f xs)))
-(asumiendo Eq a y Eq b)
+-- Definiciones:
+-- elem :: a -> [a] -> Bool
+{E0} elem e [] = False
+{E1} elem e (x:xs) = e == x || elem e xs
 
--- DEfinciones
-{M0} : map f [] = []
-{M1} : map f (x:xs) = f x : map xs
+-- map :: (a -> b) -> [a] -> [b]
+{M0} map f [] = []
+{M1} map f (x:xs) = f x : map f xs
 
-{E0} : elem e [] = False
-{E1} : elem e (x:xs) = e == x || elem e xs
+-- Quiero probar que:
+∀ f::a->b . ∀ e::a . ∀ xs::[a] . ((elem e xs) ⇒ (elem (f e) (map f xs)))
 
--- Usando induccion estructural en xs quiero ver que valen:
-1) Caso Base. P([])
-2) Caso Inductivo. ∀ x :: a. P(xs) => P(x:xs)
-con P(x): ((elem e xs) ⇒ (elem (f e) (map f xs)))
+-- Uso induccion estructural sobre xs:
 
--- Caso Base:
-((elem e []) => (elem (f e) (map f [])))
-= {E0}
-False => (elem (f e) (map f []))
--- False implica Q es True para cualquier Q , queda demostrado el caso Base.
+Caso Base. P([])
+(elem e []) ⇒ (elem (f e) (map f [])) = {E0}
+False ⇒ (elem (f e) (map f []))       = {Bool}
+True
+{- Queda demostrado el caso Base. -}
 
--- Caso inductivo:
-
-{HI}: ((elem e xs) => (elem (f e) (map f xs)))
+Caso Inductivo. 
+-- Sea
+{HI}: P(xs) = ∀ f::a->b . ∀ e::a. ((elem e xs) ⇒ (elem (f e) (map f xs)))
 
 -- Qvq:
-{TI}: ((elem e (x:xs)) => (elem (f e) (map f (x:xs))))
+P(x:xs) = ∀ f::a->b . ∀ e::a. ∀ xs :: [a], ∀ x :: a.
+          (elem e (x:xs)) ⇒ (elem (f e) (map f (x:xs)))
 
-elem e (x:xs) => elem (f e) (map f (x:xs))
-= {E1}
-e == x || elem e xs => elem (f e) (map f (x:xs))
-= {M1} -- LLamo P = e == x || elem e xs
-P => elem (f e) (f x : map f xs)
-= {E1}
-e == x || elem e xs => (f e) == (f x) || elem (f e) (map f xs)
--- Por lema de generacion de bool separo en casos:
+elem e (x:xs) ⇒ elem (f e) (map f (x:xs))           = {E1}
+e == x || elem e xs ⇒ elem (f e) (map f (x:xs))     = {M1}
+e == x || elem e xs ⇒ elem (f e) (f x : (map f xs)) = {LGB}
+-- Separo en casos:
 A) e == x
 B) e != x
 
 -- Caso A)
-True || elem e xs => (f e) == (f x) || elem (f e) (map f xs)
--- Como e == x --> f e == f x
-True || elem e xs => True || elem (f e) (map f xs)
-= {Bool}
-True => True -- > Queda demostrado caso A)
+True || elem e xs ⇒ elem (f e) (f x : map f xs) = {Bool}
+True ⇒ elem (f e) (f x : map f xs)              = {E1}
+True ⇒ (f e) == (f x) || elem (f e) (map f xs)  = {Por caso A, f e == f x}
+True ⇒ True || elem (f e) (map f xs)            = {Bool}
+True
+{- Queda demostrado caso A. -}
 
 -- Caso B)
-False || elem e xs => False || elem (f e) (map f xs)
-= {Bool}
-elem e xs => elem (f e) (map f xs)
--- Por lema de generacion de bool separo en casos:
-B.1) elem e xs = False
-B.2) elem e xs = True
+False || elem e xs ⇒ elem (f e) (f x : map f xs)     = {Bool}
+elem e xs ⇒ elem (f e) (f x : map f xs)              = {E1}
+elem e xs ⇒ (f e) == (f x) || elem (f e) (map f xs)  = {LGB}
+-- Separo en casos:
+B.1) elem e xs = True
+B.2) elem e xs = False
 
 -- Caso B.1)
-False => elem (f e) (map f xs) -- > False => Q , es True para todo Q , queda demostrado.
+True ⇒ (f e) == (f x) || elem (f e) (map f xs) = {HI}
+True ⇒ (f e) == (f x) || True                  = {Bool}
+True
+{- Queda demostrado caso B.1-}
 
 -- Caso B.2)
-elem e xs => elem (f e) (map f xs)
-= {HI}
-True -- > Queda demostrado el caso B.2) , por lo tanto queda demostrado caso B)
-
--- Como esta demostrado A) Y B) queda demostrado el paso inductivo.
--- Por lo tanto queda demostrado P(xs).
+False ⇒ (f e) == (f x) || elem (f e) (map f xs) = {Bool}
+True
+{- Queda demostrado caso B.2.
+   Luego, queda demostrado Caso B. 
+   Por lo tanto queda demostrado caso inductivo. -}
 ```
