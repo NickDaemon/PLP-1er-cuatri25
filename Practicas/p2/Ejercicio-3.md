@@ -45,7 +45,7 @@ length (x : x : duplicar xs)   = {L1}
 2 * (length (x:xs))             
 
 {- Como Lado izq = Lado der , queda demostrado el caso inductivo. -}
-
+```
 ## 3.2
 ```haskell
 -- Definiciones: 
