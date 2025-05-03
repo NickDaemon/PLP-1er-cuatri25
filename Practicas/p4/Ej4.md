@@ -5,7 +5,7 @@
  - (((u x) (y z)) (λv : Bool. v y))
 
 ### II:
-Para dibujar el arbol sintáctico planteo:
+Arbol sintáctico:
  - M N
  - M = (P R) (S Q)
  - P = u, R = x
@@ -30,7 +30,7 @@ Para dibujar el arbol sintáctico planteo:
 - (((λx: Bool → (Nat → Bool). (λy: Bool → Nat. (λz: Bool. (x z) (y z)))) u) v) w
 
 ### II:
-Para dibujar el arbol sintáctico planteo:
+Arbol sintáctico:
 - M w
 - M = N v
 - N = O u
@@ -51,3 +51,26 @@ Para dibujar el arbol sintáctico planteo:
 | `z`      | Ligada           | En `λz` (cuerpo: `S`) |
 
 ## C:
+### I:
+- w (λx : Bool → Nat → Bool. λy : Bool → Nat. λz : Bool. x z (y z)) u v
+- (((w (λx : Bool → (Nat → Bool). (λy : Bool → Nat. (λz : Bool. (x z) (y z))))) u) v)
+
+### II:
+Arbol sintáctico:
+
+- M = ((N u) v)
+- N = w O
+- O = λx: Bool → (Nat → Bool). P
+- P = λy: Bool → Nat. Q
+- Q = λz: Bool. R
+- R = (x z) (y z)
+
+### III:
+| Variable | ¿Libre o ligada? | ¿Dónde aparece?              |
+| -------- | ---------------- | ---------------------------- |
+| `w`      | Libre            | En la aplicación más externa |
+| `x`      | Ligada           | En `O`                       |
+| `y`      | Ligada           | En `P`                       |
+| `z`      | Ligada           | En `Q`                       |
+| `u`      | Libre            | En la aplicación intermedia  |
+| `v`      | Libre            | En la aplicación más externa |
