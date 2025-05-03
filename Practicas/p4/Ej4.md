@@ -5,21 +5,14 @@
  - (((u x) (y z)) (λv : Bool. v y))
 
 ### II:
-Para dibujar el arbol sintáctico puedo verlo como
-M = ((u x) (y z)) , y N = (λv : Bool. v y) y empezar a descomponer
+Para dibujar el arbol sintáctico planteo:
+ - M N
+ - M = (P R) (S Q)
+ - P = u, R = x
+ - S = y, Q = z
+ - N = (λv : Bool. X Y)
+ - X = v, Y = y
 
-App
-├── App
-│   ├── App
-│   │   ├── u
-│   │   └── x
-│   └── App
-│       ├── y
-│       └── z
-└── Abs (λv : Bool. v y)
-    └── App
-        ├── v
-        └── y
 
 ### III:
  | Variable | ¿Libre o ligada? | ¿Dónde aparece?                   |
