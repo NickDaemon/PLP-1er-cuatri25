@@ -74,3 +74,10 @@ Arbol sintáctico:
 | `z`      | Ligada           | En `Q`                       |
 | `u`      | Libre            | En la aplicación intermedia  |
 | `v`      | Libre            | En la aplicación más externa |
+
+
+## IV:
+- A = (λx : Bool → Nat → Bool. λy : Bool → Nat. λz : Bool. x z (y z)) u
+- B = (((λx: Bool → (Nat → Bool). (λy: Bool → Nat. (λz: Bool. (x z) (y z)))) u) v) w
+- C = (((w (λx : Bool → (Nat → Bool). (λy : Bool → Nat. (λz : Bool. (x z) (y z))))) u) v)
+ - A aparece como subtermino solo en B.
