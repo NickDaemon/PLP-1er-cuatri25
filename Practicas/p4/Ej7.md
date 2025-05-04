@@ -1,12 +1,15 @@
+### Modificado
 ```haskell
 
 Γ ⊢ M: τ
 ___________________→i2
 Γ ⊢ λx: σ. M :σ → τ
+```
+### Derivando en el original:
+```haskell
 
-
-__________________ax _______________ax
-Γ' ⊢ x:Bool → Bool   Γ' ⊢ true: Bool
+__________________t-var _______________t-true
+Γ' ⊢ x:Bool → Bool      Γ' ⊢ true: Bool
 ____________________________________t-app
 Γ, x:Bool → Bool ⊢ x true: Bool
 ___________________________t-abs
