@@ -6,5 +6,3 @@
 | Es bien formado        | ✅ (sintácticamente válido)                  |
 | Es tipable             | ❌ (porque las ramas tienen distintos tipos) |
 | Tiene variables libres | ❌                                           |
-
-## Ejercicio 6:
