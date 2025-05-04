@@ -1,6 +1,7 @@
 ## Ejercicio 5:
 - `If` true `Then` zero `Else` false
 
+| Propiedad                 | Cumple                                     |
 | --------------------------| -------------------------------------------
 | Es bien formado           | ✅ (sintácticamente válido)                  |
 | No es tipable             | ❌ (porque las ramas tienen distintos tipos) |
