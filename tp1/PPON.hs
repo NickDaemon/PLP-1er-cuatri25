@@ -10,18 +10,20 @@ data PPON
 
 -- Ejercicio 5
 pponAtomico :: PPON -> Bool
-pponAtomico = foldPPON (const True) (const True) (const False)
+pponAtomico ppon = case ppon of
+  ObjetoPP _ -> False
+  _          -> True
 
 -- Ejercicio 6
 pponObjetoSimple :: PPON -> Bool
 pponObjetoSimple ppon = case ppon of
-  ObjetoPP xs -> all (pponAtomico . snd) xs
+  ObjetoPP xs -> all (pponAtomico . snd) xs 
   _           -> False
 
 -- Ejercicio 7
 intercalar :: Doc -> [Doc] -> Doc
-intercalar s [] = vacio    -- > Como foldr1 no maneja el caso de la lista vacia , lo incluimos.
-intercalar s ds = foldr1 (\t acc -> t <+> s <+> acc) ds
+intercalar _ [] = vacio    -- > Como foldr1 no maneja el caso de la lista vacia , lo incluimos.
+intercalar s ds = foldr1 (\t rec -> t <+> s <+> rec) ds
 
 entreLlaves :: [Doc] -> Doc
 entreLlaves [] = texto "{ }"
@@ -39,14 +41,32 @@ entreLlaves ds =
 aplanar :: Doc -> Doc
 aplanar = foldDoc vacio fTexto fLinea 
   where
-    fTexto t acc = texto t <+> acc
-    fLinea s acc = texto " " <+> acc
+    fTexto s acc = texto s <+> acc
+    fLinea _ acc = texto " " <+> acc
 
 -- Ejercicio 9
 
-            
-      
-      
-      
+pponAdoc :: PPON -> Doc
+pponAdoc ppon = case ppon of
+  TextoPP s      -> texto (show s)
+  IntPP i        -> texto (show i)
+  ObjetoPP lista -> if pponObjetoSimple ppon then aplanar docs else docs
+    where
+      docs = entreLlaves (foldr parAdoc [] lista)
+      parAdoc (s, ppon') rec = (texto (show s) <+> texto ": " <+> pponAdoc ppon') : rec
 
+{-
 
+Es recursión primitiva por que:
+
+    - Cada caso base se escribe combinando los parámetros que no son del tipo PPON.
+    
+    - El caso recursivo se escribe combinando los valores que no son del tipo PPON
+      (en este caso los string s), y el llamado recursivo sobre los parámetros 
+      que sí son del tipo PPON.
+
+    - Pero además , como "usamos" el parámetro del tipo PPON cuando hacemos 
+      pponObjetoSimple ppon, no podemos considerarla recursión estructural 
+      sino mas bien primitiva.
+
+-}
