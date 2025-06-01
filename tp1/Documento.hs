@@ -44,14 +44,6 @@ d1 <+> d2 = foldDoc d2 fTexto Linea d1
       Texto s' d  -> Texto (s ++ s') d 
       _           -> Texto s docAcumulado
 
-infixr 6 <+>
-(<+>) :: Doc -> Doc -> Doc
-d1 <+> d2 = foldDoc d2 fTexto Linea d1 
-  where
-    fTexto s docAcumulado = case docAcumulado of
-      Texto s' d  -> Texto (s ++ s') d 
-      _           -> Texto s docAcumulado
-
 {-
   - Sean d1 y d2 documentos que cumplen el invariante.
   - Usamos foldDoc, que recorre el documento d1 de manera estructural. 

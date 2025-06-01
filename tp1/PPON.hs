@@ -46,14 +46,14 @@ aplanar = foldDoc vacio fTexto fLinea
 
 -- Ejercicio 9
 
-pponAdoc :: PPON -> Doc
-pponAdoc ppon = case ppon of
+pponADoc :: PPON -> Doc
+pponADoc ppon = case ppon of
   TextoPP s      -> texto (show s)
   IntPP i        -> texto (show i)
   ObjetoPP lista -> if pponObjetoSimple ppon then aplanar docs else docs
     where
       docs = entreLlaves (foldr parAdoc [] lista)
-      parAdoc (s, ppon') rec = (texto (show s) <+> texto ": " <+> pponAdoc ppon') : rec
+      parAdoc (s, ppon') rec = (texto (show s) <+> texto ": " <+> pponADoc ppon') : rec
 
 {-
 
