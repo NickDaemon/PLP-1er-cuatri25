@@ -65,8 +65,8 @@ Es recursión primitiva por que:
       (en este caso los string s), y el llamado recursivo sobre los parámetros 
       que sí son del tipo PPON.
 
-    - Pero además , como "usamos" el parámetro del tipo PPON cuando hacemos 
-      pponObjetoSimple ppon, no podemos considerarla recursión estructural 
-      sino mas bien primitiva.
+    - Sin embargo, la función accede a las sub-estructuras en la llamada de la función
+      auxiliar `pponObjetoSimple` (si se accede a las sub-estructuras entonces la recursión 
+      no es estructural) por ende la recursión es primitiva.
 
 -}
