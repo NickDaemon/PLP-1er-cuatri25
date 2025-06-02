@@ -66,7 +66,9 @@ Es recursión primitiva por que:
       que sí son del tipo PPON.
 
     - Sin embargo, la función accede a las sub-estructuras en la llamada de la función
-      auxiliar `pponObjetoSimple` (si se accede a las sub-estructuras entonces la recursión 
-      no es estructural) por ende la recursión es primitiva.
+      auxiliar `pponObjetoSimple` por lo tanto no sigue el esquema de recursión estructural.
+    - Además al no acceder al resultado de recursiones anteriores , no sigue el esquema
+      de recursión global.
+    - Por lo tanto sigue el esquema de recursión primitiva.
 
 -}

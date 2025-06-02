@@ -18,7 +18,7 @@ indentar k Vacio = Vacio
 
 indentar k Vacio = Vacio
 = {I}
-foldDoc Vacio Texto (\j docAcumulado -> Linea (j+i) docAcumulado) d = Vacio
+foldDoc Vacio Texto (\j docAcumulado -> Linea (j+k) docAcumulado) Vacio = Vacio
 = {F1}
 Vacio = Vacio
 
