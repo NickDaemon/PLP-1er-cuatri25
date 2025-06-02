@@ -50,8 +50,6 @@ foldDoc Vacio Texto (\j docAcumulado -> Linea (j+m) docAcumulado) (Linea k d)
 = {F3}
 (\j docAcumulado -> Linea (j+m) docAcumulado) k (foldDoc Vacio Texto (\j docAcumulado -> Linea (j+m) docAcumulado) d)
 = {I}
-(\j docAcumulado -> Linea (j+m) docAcumulado) k (indentar m d)
-= {Sintáxis}
 (\j -> \docAcumulado -> Linea (j+m) docAcumulado) k (indentar m d)
 = {η}
 (\j -> Linea (j+m)) k (indentar m d)
