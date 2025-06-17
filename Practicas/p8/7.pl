@@ -52,18 +52,22 @@ permutacion([X|Xs], P) :-
     partir(I, R, L1, L2),
     append(L1, [X|L2], P).
 
-%VI 
-
-    
-    
-
-
-
-
-
+%VI reparto:
+reparto(L, 1, [L]).
+reparto(L, N, [X|Xs]) :-
+    N > 1,
+    append(X, Resto, L),
+    N1 is N - 1,
+    reparto(Resto, N1, Xs).
 
 
+%VII repartoSinVacias
+repartoSinVacias(L, 1, [L]) :-
+    L \= [].  
 
-
-
-     
+repartoSinVacias(L, N, [X|Xs]) :-
+    N > 1,
+    append(X, Resto, L),
+    X \= [],          
+    N1 is N - 1,
+    repartoSinVacias(Resto, N1, Xs).

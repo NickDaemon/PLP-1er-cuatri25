@@ -42,11 +42,6 @@ sublista(Descartar, Tomar, L, R) :-
     longitud de la lista L agregando dos predicados:
           length(L, N),
           between(0, N, Descartar).
-  - De esa manera podemos frenar las consultas cuando Descartar supere el tamaño de L.
-  - Y si quisieramos usar sublista para saber todas las sublistas posibles de L junto
-    con cuanto hay que descartar y tomar podriamos instanciar las variables primero con
-    append, de esa manera trabajaríamos con combinaciones finitas de Prefijo, Sufijo y R.
-    
 */
 
 % Ejercicio 2:
@@ -61,13 +56,12 @@ tamaño(M, F, C) :-
     length(M, F),
     maplist(longitud(C), M).
 
-
 % Ejercicio 4: 
-coordenada(T, (Fila, Columna)) :-
-    tamaño(T, F, C),
-    between(1, F, Fila),
-    between(1, C, Columna).
-    
+coordenada([X|_], (I,J)) :-
+    length(X,N),
+    between(1,5,I),
+    between(1,N,J).
+
 % Ejercicio 5: 
 kPiezas(K, PS):-
     nombrePiezas(L),
@@ -91,10 +85,7 @@ seccionTablero(T, ALTO, ANCHO, (I,J), ST):-
     I1 is I-1,
     J1 is J-1,
     sublista(I1, ALTO, T, Seccion),
-    maplist(es_sublista(J1, ANCHO), Seccion, ST).
-
-es_sublista(J1, ANCHO, SubSeccion, STs) :-
-    sublista(J1, ANCHO, SubSeccion, STs).
+    maplist(sublista(J1, ANCHO), Seccion, ST).
 
 % Ejercicio 7:
 ubicarPieza(T, I) :-
@@ -123,11 +114,11 @@ cantSoluciones(Poda, Columnas, N):-
     length(TS, N).
 
 % ?- time(cantSoluciones(sinPoda, 3, N))
-% 23,133,566 inferences, 2.148 CPU in 2.157 seconds (100% CPU, 10769635 Lips)
+% 22,384,415 inferences, 2.306 CPU in 2.310 seconds (100% CPU, 9707472 Lips)
 % N = 28.
 
 % ?- time(cantSoluciones(sinPoda, 4, N))
-% 857,741,729 inferences, 77.608 CPU in 77.623 seconds (100% CPU, 11052199 Lips)
+% 837,341,601 inferences, 84.647 CPU in 84.788 seconds (100% CPU, 9892139 Lips)
 % N = 200.
 
 % Ejercicio: 11
@@ -137,17 +128,22 @@ poda(podaMod5, T):- todosGruposModulo5(T).
 todosGruposModulo5(T):-
     findall(IJ, (coordenada(T, IJ),estaLibre(T, IJ)), L),
     agrupar(L, G),
-    forall(member(X, G), (length(X, N), 0 is N mod 5)).
-    
+    maplist(esMod5, G).
+
 estaLibre(T, (I,J)) :-
-    seccionTablero(T,1,1,(I,J), [[X]]),
+    nth1(I, T, Fila),
+    nth1(J, Fila, X),
     var(X).
 
+esMod5(L):-
+  length(L, N),
+  0 is N mod 5.
+
 % ?- time(cantSoluciones(podaMod5, 3, N)).
-% 14,801,907 inferences, 1.496 CPU in 1.497 seconds (100% CPU, 9892608 Lips)
+% 11,333,634 inferences, 1.210 CPU in 1.214 seconds (100% CPU, 9370334 Lips)
 % N = 28.
 
 % ?- time(cantSoluciones(podaMod5, 4, N)).
-% 326,698,373 inferences, 33.511 CPU in 33.516 seconds (100% CPU, 9748972 Lips)
+% 243,211,202 inferences, 26.514 CPU in 26.549 seconds (100% CPU, 9173090 Lips)
 % N = 200.
    
