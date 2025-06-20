@@ -16,7 +16,7 @@ sublista(Descartar, Tomar, L, R) :-
     - Como Descartar y L estan instanciados, en los primeros pasos Prefijo y Sufijo se 
       instancian correctamente.
     - Luego como R esta instanciado ,length puede relacionar correctamente a R con Tomar,
-      ya sea que este instanciado o no.
+      ya sea que Tomar este instanciado o no.
     - Por último, como R es una lista de tamaño Tomar y Sufijo esta instanciado, append
       puede verificar si R efectivamente unifica con los primeros "Tomar" elementos de 
       Sufijo.
@@ -69,11 +69,13 @@ kPiezas(K, PS):-
 
 es_combinacion(0, _, []). 
 
+% Elegimos colocar la pieza.
 es_combinacion(K, [L|LS], [L|PS]) :- 
     K > 0,
     K1 is K - 1,
     es_combinacion(K1, LS, PS).
 
+% Elegimos no colocar la pieza.
 es_combinacion(K, [_|LS], PS):- 
     K > 0,
     length(LS, Restantes),
@@ -146,4 +148,3 @@ esMod5(L):-
 % ?- time(cantSoluciones(podaMod5, 4, N)).
 % 243,211,202 inferences, 26.514 CPU in 26.549 seconds (100% CPU, 9173090 Lips)
 % N = 200.
-   
