@@ -151,3 +151,93 @@ todo lo que no pueda deducirse a partir del programa se supone falso.
     - La exploración depth-first (DFS) es **incompleta**. Puede provocar que Prolog nunca encuentre refutaciones posibles.
     - Al unificar, Prolog no usa la regla occurs-check. Por ejemplo, X unifica con f(X). Esto es **incorrecto**.
     - Puede provocar que Prolog encuentre una “refutación” **incorrecta**.
+
+##### POO
+- Los programas están conformados por componentes, llamadas
+objetos, que interactúan intercambiando mensajes.
+- Un objeto puede enviar un mensaje a otro. Un mensaje
+representa una solicitud al objeto receptor, para que lleve a
+cabo una de sus operaciones.
+- La **interfaz** de un objeto es el conjunto de mensajes que es
+capaz de responder.
+    - Supongamos que tenés un objeto que representa un número (5).
+    - Ese objeto puede responder a mensajes como:
+        - 5 + 3          "Devuelve 8"
+        - 5 printString  "Devuelve '5'"
+        - 5 isZero       "Devuelve false"
+    - Entonces, su interfaz incluye los **mensajes**: + , printString, isZero
+- Un **método** es el procedimiento que usa un objeto para
+responder un mensaje. Es decir, es la implementación efectiva
+de la operación solicitada por el mensaje.
+    - Ej Cuando escribis: 5 factorial  **"Envía el mensaje 'factorial' al número 5"**
+    - **Mensaje**: 'factorial'
+    - El objeto 5 (una instancia de la clase SmallInteger) recibe ese mensaje.
+    - Smalltalk busca en la clase SmallInteger el método llamado factorial.
+    - Encuentra el código (el método) que sabe cómo calcular el factorial y lo ejecuta.
+- La forma en la que un objeto lleva a cabo una operación puede
+depender de **colaboradores externos** ası́ como de su estado
+interno, dado por un conjunto de **colaboradores internos** .
+    - **colaboradores externos**: 
+        - También llamados parámetros o argumentos del mensaje recibido.
+    - **colaboradores internos**: 
+        - Son los **atributos** o **variables de instancia** del objeto.
+        - Representan su **estado**.
+        - Se definen en la clase y viven dentro del objeto mientras exista.
+    - Cuando un método se ejecuta, puede usar un argumento (colaborador externo) para modificar el estado del objeto (colaboradores internos).
+    - Analogía con una calculadora: 
+        - Su memoria interna (el valor que guarda) es un colaborador interno.
+        - Los números que le ingresás son colaboradores externos.
+- **Encapsulamiento**
+    - **Principio de encapsulamiento**
+        - Sólo se puede interactuar con un objeto a través de su interfaz.
+        - El estado interno de un objeto es inaccesible desde el exterior.
+    - **Consecuencias**
+        - Un conjunto de enteros se puede representar con una lista enlazada o con un árbol binario balanceado, sin que el usuario pueda notar una diferencia de comportamiento.
+        - **Duck Typing**: Un objeto se puede intercambiar por otro que
+        implemente la misma interfaz.
+            - No importa de qué clase es un objeto, solo importa si sabe responder a los mensajes enviados.
+            - Ej Si tengo un objeto 5 y otro objeto soyCinco , si ambos responden al mensaje "alCuadradoDoy25" , entonces los puedo considerar el mismo objeto.
+- **Características de SmallTalk**:
+    - **Envı́o de mensajes sincrónico**:
+        - Cuando un objeto recibe un mensaje, el procesamiento **se detiene** hasta que el objeto responda.
+        - Si el envío fuera asincrónico un mensaje se podría procesar en segundo plano mientras se continua con mensajes posteriores.
+    - **Envı́o de mensajes con respuesta**:
+        - En Smalltalk, cuando le enviás un mensaje a un objeto, ese envío siempre devuelve un resultado.
+        - El valor del retorno puede ser: otro objeto, un valor simple (número, booleano, etc), o nil si no hay nada que devolver.
+    - **Objetos mutables**
+        - Sus colaboradores internos se pueden modificar durante la ejecución.
+            - Si bien el estado interno (atributos) está privado (no accesible directamente), cada clase define métodos públicos para:
+                - Leer valores (**getters**).
+                - Modificar valores (**setters**).
+    - **Clasificación**:
+        - En Smalltalk, una clasificación es simplemente una clase.
+        - Define:
+            - Qué **atributos** tienen sus objetos.
+            - Qué **métodos** pueden responder esos objetos.
+    - **Herencia simple**:
+        - Cada clase tiene una única superclase de la cual hereda atributos y métodos.
+        - Esto quiere decir que la jerarquía de clases es un árbol, sin múltiples padres (no hay herencia múltiple).
+- **Clases e instancias**
+    - Todo objeto es **instancia** de alguna **clase.**
+        - Ejemplo. (1 @ 2) es una instancia de la clase Point.
+    - Todas las instancias de una clase tienen los mismos atributos.
+        - Ejemplo. Todas las instancias de Point tienen atributos x e y.
+    - Todas las instancias de una clase usan el mismo método para
+      responder un mismo mensaje.
+        - Ejemplo. Los mensajes (1 @ 2) rho y (3 @ 4) rho se
+        resuelven con un método implementado en la clase Point.
+    - Cada clase es subclase de alguna otra clase.
+    - Una clase hereda todos los métodos de su superclase.
+    - Una clase puede elegir reemplazar (**override**) un método definido en la
+    superclase por otro más especı́fico.
+    - Hay clases que están destinadas a abstraer el comportamiento de
+    sus subclases, pero no tienen instancias 
+    - Estas se llaman clases **abstractas**.
+    - Ej la clase **Number**
+        - Define operaciones básicas para números.
+        - Pero no vas a crear un objeto que sea simplemente un **Number**.   
+        - En cambio, crearás objetos de subclases como SmallInteger, Float, etc.
+        - Number  (abstracta)
+            - ├── SmallInteger  (concreta, instanciable)
+            - └── Float         (concreta, instanciable)
+            
