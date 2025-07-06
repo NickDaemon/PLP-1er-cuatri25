@@ -1,0 +1,135 @@
+Definiciones:
+
+{F1} foldDoc fVacio _ _ Vacio = fVacio
+{F2} foldDoc fVacio fTexto fLinea (Texto s d) = fTexto s (foldDoc fVacio fTexto fLinea d)
+{F3} foldDoc fVacio fTexto fLinea (Linea i d) = fLinea i (foldDoc fVacio fTexto fLinea d)
+
+{I} indentar i d = foldDoc Vacio Texto (\j docAcumulado -> Linea (j+i) docAcumulado) d
+
+{β} (\x -> Y) Z = Y --> reemplazando a x por Z
+{η} \x -> F x = F 
+
+Usando el principio de reemplazo, queremos ver que valen por definición los siguientes lemas:
+{L1}, {L2} y {L3}
+
+{L1}:
+∀ k :: int , k ≥ 0. 
+indentar k Vacio = Vacio
+
+indentar k Vacio = Vacio
+= {I}
+foldDoc Vacio Texto (\j docAcumulado -> Linea (j+k) docAcumulado) Vacio = Vacio
+= {F1}
+Vacio = Vacio
+
+Queda demostrado {L1}.
+
+{L2}:
+∀ k :: int , k ≥ 0. ∀ s :: String, ∀ d :: Doc.
+indentar k (Texto s d) = Texto s (indentar k d)
+
+Lado izq:
+indentar k (Texto s d)
+= {I}
+foldDoc Vacio Texto (\j docAcumulado -> Linea (j+k) docAcumulado) (Texto s d)
+= {F2}
+Texto s (foldDoc Vacio Texto (\j docAcumulado -> Linea (j+k) docAcumulado) d)
+= {I}
+Texto s (indentar k d)
+
+Como Lado izq = Lado der , queda demostrado {L2}.
+
+{L3}:
+∀ k, m :: int , k ≥ 0, m ≥ 0, ∀ d :: Doc.
+indentar m (Linea k d) = Linea (m+k) (indentar m d) 
+
+Lado izq:
+indentar m (Linea k d)
+= {I}
+foldDoc Vacio Texto (\j docAcumulado -> Linea (j+m) docAcumulado) (Linea k d)
+= {F3}
+(\j docAcumulado -> Linea (j+m) docAcumulado) k (foldDoc Vacio Texto (\j docAcumulado -> Linea (j+m) docAcumulado) d)
+= {I}
+(\j -> \docAcumulado -> Linea (j+m) docAcumulado) k (indentar m d)
+= {η}
+(\j -> Linea (j+m)) k (indentar m d)
+= {β}
+Linea (k+m) (indentar m d)
+= {Por conmutatividad de la suma}
+Linea (m+k) (indentar m d)
+
+Como Lado izq = Lado der , queda demostrado {L3}.
+
+
+Ahora usando inducción estructural sobre x , queremos probar que:
+∀ n,m :: Int. (n ≥ 0 && m ≥ 0), ∀ x :: Doc.
+indentar n (indentar m x) = indentar (n+m) x
+
+Basta ver que valen:
+
+1) Caso Base: P(Vacio)
+2) Caso inductivo I: ∀ s :: String,  ∀ x :: Doc.      P(x) ⟹ P(Texto s x)
+3) Caso Inductivo II: ∀ i :: Int , i ≥ 0, ∀ x :: Doc. P(x) ⟹ P(Linea i x)
+
+Con P(x) ≡ ∀ n,m :: Int. (n ≥ 0 && m ≥ 0) ⟹ indentar n (indentar m x) = indentar (n+m) x
+
+1) Caso Base: P(Vacio)
+
+indentar n (indentar m Vacio) = indentar (n+m) Vacio
+= {L1}
+indentar n (indentar m Vacio) = Vacio
+= {L1}
+indentar n Vacio = Vacio
+= {L1}
+Vacio = Vacio
+
+Queda demostrado P(Vacio).
+
+2) Caso inductivo I: 
+Sea 
+{HI}: P(x) ≡ ∀ n,m :: Int. (n ≥ 0 && m ≥ 0) ⟹ indentar n (indentar m x) = indentar (n+m) x
+
+Qvq:
+P(Texto s x) ≡ ∀ n,m :: Int. (n ≥ 0 && m ≥ 0), ∀ x :: Doc ⟹
+               indentar n (indentar m (Texto s x)) = indentar (n+m) (Texto s x)
+
+Lado izq:
+indentar n (indentar m (Texto s x))
+= {L2}
+indentar n (Texto s (indentar m x))
+= {L2}
+Texto s (indentar n (indentar m x))
+= {HI}
+Texto s (indentar (n+m) x)
+= {L2}
+indentar (n+m) (Texto s x)
+
+Como Lado izq = Lado der , queda demostrado P(Texto s x).
+
+3) Caso Inductivo II:
+Sea 
+{HI}: P(x) ≡ ∀ n,m :: Int. (n ≥ 0 && m ≥ 0) ⟹ indentar n (indentar m x) = indentar (n+m) x
+
+Qvq
+P(Linea i x) ≡ ∀ n,m,i :: Int. (n ≥ 0 && m ≥ 0 && i ≥ 0), ∀ x :: Doc ⟹
+               indentar n (indentar m (Linea i x)) = indentar (n+m) (Linea i x)
+
+Lado izq:
+indentar n (indentar m (Linea i x))
+= {L3}
+indentar n (Linea (m+i) (indentar m x))
+= {L3}
+Linea (n+(m+i)) (indentar n (indentar m x))
+= {HI}
+Linea (n+(m+i)) (indentar (n+m) x)
+= {Por asociatividad de la suma}
+Linea ((n+m) + i) (indentar (n+m) x)
+= {L3}
+indentar (n+m) (Linea i x)
+
+Como Lado izq = Lado der, Queda demostrado P(Linea i x).
+
+Como probamos 1), 2) y 3) queda demostrado:
+
+∀ n,m :: Int. (n ≥ 0 && m ≥ 0), ∀ x :: Doc.
+indentar n (indentar m x) = indentar (n+m) x
